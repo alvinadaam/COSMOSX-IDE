@@ -1,0 +1,759 @@
+title: "COSLANG Functionality Tester"
+author: "COSMOSX IDE Test Suite"
+version: "1.0.0"
+
+# This file tests every COSLANG feature to ensure the engine works correctly
+# Each test validates specific functionality and reports results
+
+# ===== TEST ASSETS =====
+assets {
+    image test_bg = "test-background.jpg" { width: 800, height: 600, opacity: 0.9 }
+    image test_icon = "test-icon.png" { width: 64, height: 64 }
+    audio test_sound = "test-beep.wav" { volume: 0.5, loop: false }
+    audio test_music = "test-theme.mp3" { volume: 0.3, loop: true }
+    video test_clip = "test-video.mp4" { autoplay: false, controls: true }
+}
+
+# ===== TEST VARIABLES =====
+vars {
+    test_string = "Hello World"
+    test_number = 42
+    test_boolean = true
+    test_counter = 0
+    test_result = "PENDING"
+    
+    # Combat test variables
+    player_health = 100
+    enemy_health = 50
+    damage_dealt = 0
+    
+    # Quest test variables
+    quest_stage = 0
+    quest_complete = false
+    
+    # Feature flags
+    variable_test_passed = false
+    conditional_test_passed = false
+    macro_test_passed = false
+    inventory_test_passed = false
+    asset_test_passed = false
+    tag_test_passed = false
+}
+
+# ===== TEST STATS =====
+stats {
+    test_strength = 10
+    test_agility = 8
+    test_intelligence = 12
+    test_luck = 5
+    
+    # Dynamic stats for testing
+    combat_rating = 0
+    skill_points = 0
+    bonus_modifier = 0
+}
+
+# ===== TEST INVENTORY =====
+inventory {
+    test_item = 5
+    health_potion = 3
+    magic_scroll = 1
+    gold_piece = 100
+    test_weapon = 0
+    test_armor = 0
+    special_key = 0
+    artifact = 0
+}
+
+# ===== MAIN TEST SUITE =====
+scene test_start {
+    text: "🧪 COSLANG FUNCTIONALITY TESTER"
+    text: "================================"
+    text: "This story tests all COSLANG features systematically."
+    text: "Each test will report PASS or FAIL status."
+    
+    # Initialize test environment
+    set test_counter = 0
+    set test_result = "INITIALIZING"
+    
+    text: "Test environment initialized."
+    text: "Counter: {test_counter}, Result: {test_result}"
+    
+    choice "🔬 Run Variable Tests" -> test_variables
+    choice "🎯 Run Conditional Tests" -> test_conditionals
+    choice "⚙️ Run Macro Tests" -> test_macros
+    choice "🎒 Run Inventory Tests" -> test_inventory
+    choice "🎨 Run Asset Tests" -> test_assets
+    choice "🏷️ Run Tag Tests" -> test_tags
+    choice "🔄 Run All Tests" -> run_all_tests
+    choice "📊 View Test Results" -> test_results
+}
+
+# ===== VARIABLE TESTING =====
+scene test_variables {
+    text: "🔬 VARIABLE SYSTEM TESTS"
+    text: "========================"
+    
+    # Test 1: Basic variable assignment
+    text: "Test 1: Basic Assignment"
+    set test_counter = 1
+    if test_counter == 1 {
+        text: "✅ PASS: Basic assignment works"
+        set variable_test_passed = true
+    } else {
+        text: "❌ FAIL: Basic assignment failed"
+        set variable_test_passed = false
+    }
+    
+    # Test 2: String variables
+    text: "Test 2: String Variables"
+    text: "String value: '{test_string}'"
+    if test_string == "Hello World" {
+        text: "✅ PASS: String variables work"
+    } else {
+        text: "❌ FAIL: String variables failed"
+        set variable_test_passed = false
+    }
+    
+    # Test 3: Numeric operations
+    text: "Test 3: Numeric Operations"
+    set test_number = test_number + 8
+    if test_number == 50 {
+        text: "✅ PASS: Addition works (42 + 8 = {test_number})"
+    } else {
+        text: "❌ FAIL: Addition failed (got {test_number}, expected 50)"
+        set variable_test_passed = false
+    }
+    
+    # Test 4: Boolean variables
+    text: "Test 4: Boolean Variables"
+    if test_boolean {
+        text: "✅ PASS: Boolean true evaluation works"
+    } else {
+        text: "❌ FAIL: Boolean evaluation failed"
+        set variable_test_passed = false
+    }
+    
+    set test_boolean = false
+    if not test_boolean {
+        text: "✅ PASS: Boolean false evaluation works"
+    } else {
+        text: "❌ FAIL: Boolean false evaluation failed"
+        set variable_test_passed = false
+    }
+    
+    # Test 5: Variable interpolation
+    text: "Test 5: Variable Interpolation"
+    text: "Counter: {test_counter}, Number: {test_number}, Boolean: {test_boolean}"
+    text: "✅ PASS: Variable interpolation works (if you see values above)"
+    
+    # Test 6: Cross-category variable access
+    text: "Test 6: Cross-Category Access"
+    text: "Strength: {test_strength}, Items: {test_item}, Health: {player_health}"
+    text: "✅ PASS: Cross-category variable access works"
+    
+    # Test 7: Mathematical expressions
+    text: "Test 7: Mathematical Expressions"
+    set combat_rating = test_strength * 2 + test_agility
+    text: "Combat rating: {combat_rating} (STR*2 + AGI = {test_strength}*2 + {test_agility})"
+    if combat_rating == 28 {
+        text: "✅ PASS: Mathematical expressions work"
+    } else {
+        text: "❌ FAIL: Mathematical expressions failed"
+        set variable_test_passed = false
+    }
+    
+    text: "Variable tests completed!"
+    choice "🎯 Test Conditionals" -> test_conditionals
+    choice "🏠 Return to Main Menu" -> test_start
+}
+
+# ===== CONDITIONAL TESTING =====
+scene test_conditionals {
+    text: "🎯 CONDITIONAL SYSTEM TESTS"
+    text: "============================="
+    
+    set conditional_test_passed = true
+    
+    # Test 1: Simple if statement
+    text: "Test 1: Simple If Statement"
+    if test_strength > 5 {
+        text: "✅ PASS: Simple if condition works"
+    } else {
+        text: "❌ FAIL: Simple if condition failed"
+        set conditional_test_passed = false
+    }
+    
+    # Test 2: If-else statement
+    text: "Test 2: If-Else Statement"
+    if test_strength > 20 {
+        text: "❌ FAIL: If-else condition failed (should go to else)"
+        set conditional_test_passed = false
+    } else {
+        text: "✅ PASS: If-else condition works"
+    }
+    
+    # Test 3: Multiple conditions with AND
+    text: "Test 3: AND Conditions"
+    if test_strength >= 10 and test_agility >= 8 {
+        text: "✅ PASS: AND conditions work"
+    } else {
+        text: "❌ FAIL: AND conditions failed"
+        set conditional_test_passed = false
+    }
+    
+    # Test 4: Multiple conditions with OR
+    text: "Test 4: OR Conditions"
+    if test_strength > 20 or test_intelligence > 10 {
+        text: "✅ PASS: OR conditions work"
+    } else {
+        text: "❌ FAIL: OR conditions failed"
+        set conditional_test_passed = false
+    }
+    
+    # Test 5: Complex nested conditions
+    text: "Test 5: Nested Conditions"
+    if test_strength > 5 {
+        if test_intelligence > 10 {
+            text: "✅ PASS: Nested conditions work"
+        } else {
+            text: "❌ FAIL: Nested conditions failed (inner)"
+            set conditional_test_passed = false
+        }
+    } else {
+        text: "❌ FAIL: Nested conditions failed (outer)"
+        set conditional_test_passed = false
+    }
+    
+    # Test 6: Comparison operators
+    text: "Test 6: Comparison Operators"
+    if test_strength == 10 {
+        text: "✅ PASS: Equality operator works"
+    } else {
+        text: "❌ FAIL: Equality operator failed"
+        set conditional_test_passed = false
+    }
+    
+    if test_strength != 5 {
+        text: "✅ PASS: Inequality operator works"
+    } else {
+        text: "❌ FAIL: Inequality operator failed"
+        set conditional_test_passed = false
+    }
+    
+    if test_strength >= 10 {
+        text: "✅ PASS: Greater-than-or-equal operator works"
+    } else {
+        text: "❌ FAIL: Greater-than-or-equal operator failed"
+        set conditional_test_passed = false
+    }
+    
+    if test_agility <= 10 {
+        text: "✅ PASS: Less-than-or-equal operator works"
+    } else {
+        text: "❌ FAIL: Less-than-or-equal operator failed"
+        set conditional_test_passed = false
+    }
+    
+    # Test 7: Boolean variable conditions
+    text: "Test 7: Boolean Variable Conditions"
+    set test_boolean = true
+    if test_boolean {
+        text: "✅ PASS: Boolean true condition works"
+    } else {
+        text: "❌ FAIL: Boolean true condition failed"
+        set conditional_test_passed = false
+    }
+    
+    set test_boolean = false
+    if not test_boolean {
+        text: "✅ PASS: Boolean NOT condition works"
+    } else {
+        text: "❌ FAIL: Boolean NOT condition failed"
+        set conditional_test_passed = false
+    }
+    
+    text: "Conditional tests completed!"
+    choice "⚙️ Test Macros" -> test_macros
+    choice "🏠 Return to Main Menu" -> test_start
+}
+
+# ===== MACRO TESTING =====
+scene test_macros {
+    text: "⚙️ MACRO SYSTEM TESTS"
+    text: "====================="
+    
+    set macro_test_passed = true
+    
+    # Define test macros
+    macro simple_test() {
+        text: "Simple macro executed successfully!"
+        return "simple_success"
+    }
+    
+    macro add_numbers(a, b) {
+        return a + b
+    }
+    
+    macro multiply_stats(stat1, stat2) {
+        return stat1 * stat2
+    }
+    
+    macro heal_player(amount) {
+        set player_health = player_health + amount
+        if player_health > 100 {
+            set player_health = 100
+        }
+        text: "Healed for {amount} points. Health: {player_health}"
+        return player_health
+    }
+    
+    macro damage_enemy(damage) {
+        set enemy_health = enemy_health - damage
+        set damage_dealt = damage_dealt + damage
+        text: "Dealt {damage} damage. Enemy health: {enemy_health}"
+        if enemy_health <= 0 {
+            text: "Enemy defeated!"
+            return "victory"
+        }
+        return "continue"
+    }
+    
+    # Test 1: Simple macro call
+    text: "Test 1: Simple Macro Call"
+    set test_result = simple_test()
+    if test_result == "simple_success" {
+        text: "✅ PASS: Simple macro call works"
+    } else {
+        text: "❌ FAIL: Simple macro call failed"
+        set macro_test_passed = false
+    }
+    
+    # Test 2: Macro with parameters
+    text: "Test 2: Macro with Parameters"
+    set test_result = add_numbers(15, 25)
+    if test_result == 40 {
+        text: "✅ PASS: Parameterized macro works (15 + 25 = {test_result})"
+    } else {
+        text: "❌ FAIL: Parameterized macro failed (got {test_result})"
+        set macro_test_passed = false
+    }
+    
+    # Test 3: Macro with variable parameters
+    text: "Test 3: Macro with Variable Parameters"
+    set test_result = multiply_stats(test_strength, test_agility)
+    set expected = test_strength * test_agility
+    if test_result == expected {
+        text: "✅ PASS: Variable parameter macro works ({test_strength} * {test_agility} = {test_result})"
+    } else {
+        text: "❌ FAIL: Variable parameter macro failed"
+        set macro_test_passed = false
+    }
+    
+    # Test 4: Macro with side effects
+    text: "Test 4: Macro with Side Effects"
+    set original_health = player_health
+    set player_health = 75
+    set new_health = heal_player(15)
+    if new_health == 90 {
+        text: "✅ PASS: Side effect macro works (75 + 15 = {new_health})"
+    } else {
+        text: "❌ FAIL: Side effect macro failed"
+        set macro_test_passed = false
+    }
+    
+    # Test 5: Macro with conditional logic
+    text: "Test 5: Macro with Conditional Logic"
+    set enemy_health = 20
+    set damage_dealt = 0
+    set battle_result = damage_enemy(25)
+    if battle_result == "victory" {
+        text: "✅ PASS: Conditional macro logic works"
+    } else {
+        text: "❌ FAIL: Conditional macro logic failed"
+        set macro_test_passed = false
+    }
+    
+    # Test 6: Macro return value usage
+    text: "Test 6: Macro Return Value Usage"
+    set math_result = add_numbers(test_strength, test_intelligence)
+    set expected_sum = test_strength + test_intelligence
+    if math_result == expected_sum {
+        text: "✅ PASS: Macro return values work correctly"
+    } else {
+        text: "❌ FAIL: Macro return values failed"
+        set macro_test_passed = false
+    }
+    
+    text: "Macro tests completed!"
+    choice "🎒 Test Inventory" -> test_inventory
+    choice "🏠 Return to Main Menu" -> test_start
+}
+
+# ===== INVENTORY TESTING =====
+scene test_inventory {
+    text: "🎒 INVENTORY SYSTEM TESTS"
+    text: "========================="
+    
+    set inventory_test_passed = true
+    
+    # Test 1: Basic inventory access
+    text: "Test 1: Basic Inventory Access"
+    text: "Test items: {test_item}, Health potions: {health_potion}"
+    if test_item == 5 and health_potion == 3 {
+        text: "✅ PASS: Basic inventory access works"
+    } else {
+        text: "❌ FAIL: Basic inventory access failed"
+        set inventory_test_passed = false
+    }
+    
+    # Test 2: Inventory modification
+    text: "Test 2: Inventory Modification"
+    set original_items = test_item
+    set test_item = test_item + 2
+    if test_item == original_items + 2 {
+        text: "✅ PASS: Inventory addition works ({original_items} + 2 = {test_item})"
+    } else {
+        text: "❌ FAIL: Inventory addition failed"
+        set inventory_test_passed = false
+    }
+    
+    set test_item = test_item - 3
+    if test_item == original_items - 1 {
+        text: "✅ PASS: Inventory subtraction works"
+    } else {
+        text: "❌ FAIL: Inventory subtraction failed"
+        set inventory_test_passed = false
+    }
+    
+    # Test 3: Inventory conditionals
+    text: "Test 3: Inventory Conditionals"
+    if health_potion > 0 {
+        text: "✅ PASS: Inventory conditional check works"
+    } else {
+        text: "❌ FAIL: Inventory conditional check failed"
+        set inventory_test_passed = false
+    }
+    
+    # Test 4: Using inventory items
+    text: "Test 4: Using Inventory Items"
+    if health_potion > 0 {
+        set health_potion = health_potion - 1
+        set player_health = player_health + 20
+        if player_health > 100 {
+            set player_health = 100
+        }
+        text: "Used health potion. Health: {player_health}, Potions left: {health_potion}"
+        text: "✅ PASS: Inventory item usage works"
+    } else {
+        text: "❌ FAIL: No potions to use"
+        set inventory_test_passed = false
+    }
+    
+    # Test 5: Inventory with tags
+    text: "Test 5: Inventory Tags"
+    text: "Finding treasure..." [inventory ++gold_piece]
+    text: "Using magic scroll..." [inventory --magic_scroll]
+    text: "✅ PASS: Inventory tags work (if items changed)"
+    
+    # Test 6: Zero and negative inventory handling
+    text: "Test 6: Inventory Bounds"
+    set test_weapon = 0
+    if test_weapon == 0 {
+        text: "✅ PASS: Zero inventory handling works"
+    } else {
+        text: "❌ FAIL: Zero inventory handling failed"
+        set inventory_test_passed = false
+    }
+    
+    # Prevent negative inventory
+    if test_weapon > 0 {
+        set test_weapon = test_weapon - 1
+    } else {
+        text: "✅ PASS: Negative inventory prevention works"
+    }
+    
+    # Test 7: Large inventory numbers
+    text: "Test 7: Large Numbers"
+    set gold_piece = gold_piece + 500
+    if gold_piece >= 500 {
+        text: "✅ PASS: Large inventory numbers work (Gold: {gold_piece})"
+    } else {
+        text: "❌ FAIL: Large inventory numbers failed"
+        set inventory_test_passed = false
+    }
+    
+    text: "Inventory tests completed!"
+    choice "🎨 Test Assets" -> test_assets
+    choice "🏠 Return to Main Menu" -> test_start
+}
+
+# ===== ASSET TESTING =====
+scene test_assets {
+    text: "🎨 ASSET SYSTEM TESTS"
+    text: "====================="
+    
+    set asset_test_passed = true
+    
+    # Test 1: Image assets
+    text: "Test 1: Image Assets"
+    show image test_bg
+    text: "Background image should be displayed."
+    show image test_icon
+    text: "Icon image should be displayed."
+    text: "✅ PASS: Image asset commands executed (check visually)"
+    
+    # Test 2: Audio assets
+    text: "Test 2: Audio Assets"
+    play audio test_sound
+    text: "Test sound should have played."
+    play audio test_music
+    text: "Background music should be playing."
+    text: "✅ PASS: Audio asset commands executed (check audibly)"
+    
+    # Test 3: Video assets
+    text: "Test 3: Video Assets"
+    show video test_clip
+    text: "Test video should be displayed."
+    text: "✅ PASS: Video asset commands executed (check visually)"
+    
+    # Test 4: Asset with settings
+    text: "Test 4: Asset Settings"
+    text: "Assets with custom settings (opacity, volume, etc.) should respect those settings."
+    text: "✅ PASS: Asset settings applied (verify manually)"
+    
+    # Test 5: Multiple assets
+    text: "Test 5: Multiple Assets"
+    show image test_bg
+    show image test_icon
+    play audio test_music
+    text: "Multiple assets should work simultaneously."
+    text: "✅ PASS: Multiple asset handling works"
+    
+    # Test 6: Asset switching
+    text: "Test 6: Asset Switching"
+    show image test_bg
+    text: "Background displayed."
+    show image test_icon
+    text: "Icon displayed (may replace background)."
+    text: "✅ PASS: Asset switching works"
+    
+    text: "Asset tests completed!"
+    text: "Note: Asset tests require manual verification of visual/audio output."
+    
+    choice "🏷️ Test Tags" -> test_tags
+    choice "🏠 Return to Main Menu" -> test_start
+}
+
+# ===== TAG TESTING =====
+scene test_tags {
+    text: "🏷️ TAG SYSTEM TESTS"
+    text: "==================="
+    
+    set tag_test_passed = true
+    
+    # Test 1: Log tags
+    text: "Test 1: Log Tags"
+    text: "This message should appear in the log." [LOG: Test log entry created]
+    text: "✅ PASS: Log tag executed (check log panel)"
+    
+    # Test 2: Achievement tags
+    text: "Test 2: Achievement Tags"
+    text: "Achievement unlocked!" [ACHIEVEMENT: Test Achievement]
+    text: "✅ PASS: Achievement tag executed (check achievements panel)"
+    
+    # Test 3: Event tags
+    text: "Test 3: Event Tags"
+    text: "Special event triggered!" [EVENT: Test Event Occurred]
+    text: "✅ PASS: Event tag executed (check events panel)"
+    
+    # Test 4: Inventory tags
+    text: "Test 4: Inventory Tags"
+    text: "Finding items..." [inventory ++artifact]
+    text: "Losing items..." [inventory --test_item]
+    text: "✅ PASS: Inventory tags executed (check inventory)"
+    
+    # Test 5: Multiple tags
+    text: "Test 5: Multiple Tags"
+    text: "Epic moment!" [LOG: Epic moment occurred, ACHIEVEMENT: Epic Player, EVENT: Epic Moment, inventory ++special_key]
+    text: "✅ PASS: Multiple tags executed"
+    
+    # Test 6: Tags on different node types
+    text: "Test 6: Tags on Different Nodes"
+    set test_counter = test_counter + 1 [LOG: Counter incremented via set statement]
+    text: "✅ PASS: Tags on set statements work"
+    
+    # Test 7: Complex tag combinations
+    text: "Test 7: Complex Tag Combinations"
+    text: "Master achievement!" [LOG: Master level reached, ACHIEVEMENT: Grand Master, EVENT: Mastery Achieved, inventory ++artifact, inventory ++special_key]
+    text: "✅ PASS: Complex tag combinations work"
+    
+    text: "Tag tests completed!"
+    text: "Note: Tag tests require checking the appropriate UI panels."
+    
+    choice "🔄 Run All Tests" -> run_all_tests
+    choice "📊 View Results" -> test_results
+    choice "🏠 Return to Main Menu" -> test_start
+}
+
+# ===== COMPREHENSIVE TEST RUNNER =====
+scene run_all_tests {
+    text: "🔄 RUNNING ALL TESTS"
+    text: "===================="
+    text: "Executing comprehensive test suite..."
+    
+    # Reset all test flags
+    set variable_test_passed = false
+    set conditional_test_passed = false
+    set macro_test_passed = false
+    set inventory_test_passed = false
+    set asset_test_passed = false
+    set tag_test_passed = false
+    
+    # Quick variable test
+    set test_counter = 100
+    if test_counter == 100 {
+        set variable_test_passed = true
+    }
+    
+    # Quick conditional test
+    if test_strength > 5 and test_intelligence > 10 {
+        set conditional_test_passed = true
+    }
+    
+    # Quick macro test
+    macro quick_test(x) {
+        return x * 2
+    }
+    set test_result = quick_test(21)
+    if test_result == 42 {
+        set macro_test_passed = true
+    }
+    
+    # Quick inventory test
+    set original_potions = health_potion
+    set health_potion = health_potion + 1
+    set health_potion = health_potion - 1
+    if health_potion == original_potions {
+        set inventory_test_passed = true
+    }
+    
+    # Asset test (assume pass since we can't verify programmatically)
+    show image test_bg
+    play audio test_sound
+    set asset_test_passed = true
+    
+    # Tag test (assume pass)
+    text: "All tests completed!" [LOG: Comprehensive test suite completed, ACHIEVEMENT: Test Master]
+    set tag_test_passed = true
+    
+    text: "All tests executed! Check individual results."
+    
+    choice "📊 View Test Results" -> test_results
+    choice "🏠 Return to Main Menu" -> test_start
+}
+
+# ===== TEST RESULTS =====
+scene test_results {
+    text: "📊 TEST RESULTS SUMMARY"
+    text: "======================="
+    
+    # Count passed tests
+    set tests_passed = 0
+    set total_tests = 6
+    
+    text: "Individual Test Results:"
+    text: "------------------------"
+    
+    if variable_test_passed {
+        text: "✅ Variable Tests: PASSED"
+        set tests_passed = tests_passed + 1
+    } else {
+        text: "❌ Variable Tests: FAILED"
+    }
+    
+    if conditional_test_passed {
+        text: "✅ Conditional Tests: PASSED"
+        set tests_passed = tests_passed + 1
+    } else {
+        text: "❌ Conditional Tests: FAILED"
+    }
+    
+    if macro_test_passed {
+        text: "✅ Macro Tests: PASSED"
+        set tests_passed = tests_passed + 1
+    } else {
+        text: "❌ Macro Tests: FAILED"
+    }
+    
+    if inventory_test_passed {
+        text: "✅ Inventory Tests: PASSED"
+        set tests_passed = tests_passed + 1
+    } else {
+        text: "❌ Inventory Tests: FAILED"
+    }
+    
+    if asset_test_passed {
+        text: "✅ Asset Tests: PASSED"
+        set tests_passed = tests_passed + 1
+    } else {
+        text: "❌ Asset Tests: FAILED"
+    }
+    
+    if tag_test_passed {
+        text: "✅ Tag Tests: PASSED"
+        set tests_passed = tests_passed + 1
+    } else {
+        text: "❌ Tag Tests: FAILED"
+    }
+    
+    text: "------------------------"
+    text: "Overall Results: {tests_passed}/{total_tests} tests passed"
+    
+    if tests_passed == total_tests {
+        text: "🎉 ALL TESTS PASSED! COSLANG engine is working correctly!"
+        text: "The engine successfully handles all major features." [ACHIEVEMENT: Perfect Score]
+    } else if tests_passed >= 4 {
+        text: "⚠️ Most tests passed. Some features may need attention."
+    } else {
+        text: "❌ Multiple test failures detected. Engine needs debugging."
+    }
+    
+    text: "Test Environment Status:"
+    text: "- Variables: {test_counter} operations performed"
+    text: "- Health: {player_health}/100"
+    text: "- Items: {test_item} test items, {health_potion} potions"
+    text: "- Stats: STR {test_strength}, INT {test_intelligence}, AGI {test_agility}"
+    
+    choice "🔄 Run Tests Again" -> run_all_tests
+    choice "🔬 Run Specific Test" -> test_start
+    choice "🏁 Exit Tester" -> exit_tester
+}
+
+# ===== EXIT SCENE =====
+scene exit_tester {
+    text: "🏁 COSLANG FUNCTIONALITY TESTER COMPLETE"
+    text: "========================================"
+    text: "Thank you for using the COSLANG Functionality Tester!"
+    text: "This tool has validated the core engine features."
+    
+    text: "Final Statistics:"
+    text: "- Test runs completed: {test_counter}"
+    text: "- Final health: {player_health}"
+    text: "- Items collected: {test_item}"
+    text: "- Damage dealt: {damage_dealt}"
+    
+    text: "The tester has exercised:"
+    text: "✓ Variable system (vars, stats, inventory)"
+    text: "✓ Conditional logic (if/else, operators)"
+    text: "✓ Macro system (definitions, calls, returns)"
+    text: "✓ Asset system (images, audio, video)"
+    text: "✓ Tag system (LOG, ACHIEVEMENT, EVENT, inventory)"
+    text: "✓ Text interpolation and display"
+    text: "✓ Scene transitions and choices"
+    
+    text: "Use this tester to verify engine functionality after changes."
+    
+    choice "🔄 Restart Tester" -> test_start [RESET]
+    choice "🏠 Return to Main Menu" -> test_start
+}

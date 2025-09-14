@@ -1,0 +1,64 @@
+title: "Scene Transitions Test"
+author: "Test Suite"
+version: "1.0.0"
+
+vars {
+    scenes_visited = 0
+    current_location = "start"
+}
+
+scene start {
+    text: "Testing scene transitions..."
+    set scenes_visited = scenes_visited + 1
+    set current_location = "start"
+    text: "Current location: {current_location}"
+    text: "Scenes visited: {scenes_visited}"
+    
+    choice "Go to room A" -> room_a
+    choice "Go to room B" -> room_b
+    choice "Go to hub" -> hub
+}
+
+scene room_a {
+    text: "You are in Room A."
+    set scenes_visited = scenes_visited + 1
+    set current_location = "room_a"
+    text: "Current location: {current_location}"
+    text: "Scenes visited: {scenes_visited}"
+    
+    choice "Return to start" -> start
+    choice "Go to room B" -> room_b
+    choice "Go to hub" -> hub
+}
+
+scene room_b {
+    text: "You are in Room B."
+    set scenes_visited = scenes_visited + 1
+    set current_location = "room_b"
+    text: "Current location: {current_location}"
+    text: "Scenes visited: {scenes_visited}"
+    
+    choice "Return to start" -> start
+    choice "Go to room A" -> room_a
+    choice "Go to hub" -> hub
+}
+
+scene hub {
+    text: "You are in the central hub."
+    set scenes_visited = scenes_visited + 1
+    set current_location = "hub"
+    text: "Current location: {current_location}"
+    text: "Scenes visited: {scenes_visited}"
+    
+    choice "Go to start" -> start
+    choice "Go to room A" -> room_a
+    choice "Go to room B" -> room_b
+    choice "End test" -> end
+}
+
+scene end {
+    text: "Scene transitions test completed!"
+    set scenes_visited = scenes_visited + 1
+    text: "Total scenes visited: {scenes_visited}"
+    text: "Final location: end"
+}

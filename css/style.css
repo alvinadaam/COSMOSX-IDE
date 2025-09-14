@@ -1,0 +1,135 @@
+/* CosmosX IDE - Base Layout & Theme */
+
+:root {
+  --bg-primary: #10131a;
+  --bg-secondary: #181c22;
+  --bg-tertiary: #232a36;
+  --bg-elevated: rgba(35, 42, 54, 0.85);
+  --glass: rgba(31, 111, 235, 0.08);
+  --accent: #1f6feb;
+  --accent-secondary: #388bfd;
+  --accent-glow: 0 0 16px 2px rgba(31, 111, 235, 0.25);
+  --text: #e6eaf3;
+  --text-muted: #8b949e;
+  --border: #232a36;
+  --border-strong: #388bfd;
+  --radius: 12px;
+  --header-height: 56px;
+  --sidebar-width: 260px;
+  --right-sidebar-width: 280px;
+  --z-header: 10;
+  --z-sidebar: 20;
+  --z-editor: 100;
+  --z-modal: 400;
+  --font-main: 'Segoe UI', 'Noto Sans', Arial, sans-serif;
+  --font-mono: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  --transition: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font-main);
+  background: linear-gradient(135deg, #10131a 0%, #181c22 100%);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+header {
+  height: var(--header-height);
+  min-height: var(--header-height);
+  background: linear-gradient(90deg, var(--bg-secondary) 60%, var(--bg-tertiary) 100%);
+  border-bottom: 1.5px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  z-index: var(--z-header);
+  position: relative;
+  box-shadow: 0 2px 16px 0 rgba(31, 111, 235, 0.08);
+  backdrop-filter: blur(8px);
+}
+main {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  background: var(--bg-primary);
+}
+.sidebar, .right-sidebar {
+  background: var(--bg-elevated);
+  box-shadow: 2px 0 16px 0 rgba(31, 111, 235, 0.04);
+  z-index: var(--z-sidebar);
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  max-width: 340px;
+  border-radius: 0 0 var(--radius) var(--radius);
+  border: 1.5px solid var(--border);
+  /* Remove margin-top and margin-bottom to prevent stacking/overlap */
+  margin: 0;
+  /* Ensure sidebars are always fully visible and scrollable if content overflows */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.sidebar {
+  width: var(--sidebar-width);
+  border-right: 1.5px solid var(--border-strong);
+  border-left: none;
+  margin-left: 8px;
+}
+.right-sidebar {
+  width: var(--right-sidebar-width);
+  border-left: 1.5px solid var(--border-strong);
+  border-right: none;
+  margin-right: 8px;
+}
+.panel-header, .panel-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  /* Ensure headers and content stack vertically, no overlap */
+  display: block;
+}
+.panel-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  max-height: 100vh;
+}
+.editor-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  z-index: var(--z-editor);
+  min-width: 0;
+  position: relative;
+  margin: 8px 0;
+  border-radius: var(--radius);
+  box-shadow: 0 0 0 2px var(--glass), 0 4px 32px 0 rgba(31, 111, 235, 0.10);
+  overflow: hidden;
+  transition: box-shadow var(--transition);
+}
+.editor-container:focus-within {
+  box-shadow: 0 0 0 3px var(--accent), 0 4px 32px 0 rgba(31, 111, 235, 0.18);
+}
+
+@media (max-width: 1200px) {
+  .sidebar { width: 180px; }
+  .right-sidebar { width: 180px; }
+}
+@media (max-width: 900px) {
+  .sidebar, .right-sidebar { display: none; }
+  .editor-container { min-width: 0; }
+}
+@media (max-width: 600px) {
+  header { padding: 0 8px; }
+}

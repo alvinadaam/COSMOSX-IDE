@@ -1,0 +1,623 @@
+title: "The Quantum Nexus Chronicles"
+author: "COSMOSX Interactive Demo"
+version: "1.0.0"
+
+# Complex branching interactive story demonstrating advanced COSLANG features
+# This story showcases deep narrative branching, complex conditionals, and rich UI integration
+
+# ===== STORY ASSETS =====
+assets {
+    image nexus_bg = "quantum-nexus.jpg" { width: 1024, height: 768, opacity: 0.9 }
+    image portal_glow = "portal-effect.png" { width: 256, height: 256, opacity: 0.7 }
+    image crystal_shard = "crystal-fragment.png" { width: 64, height: 64 }
+    image ancient_tome = "mystical-book.png" { width: 128, height: 96 }
+    image void_entity = "shadow-being.png" { width: 200, height: 300, opacity: 0.8 }
+    
+    audio ambient_hum = "nexus-ambient.mp3" { volume: 0.4, loop: true }
+    audio portal_sound = "portal-activation.wav" { volume: 0.8, loop: false }
+    audio crystal_chime = "crystal-resonance.wav" { volume: 0.6, loop: false }
+    audio void_whisper = "void-whispers.mp3" { volume: 0.5, loop: true }
+    audio victory_theme = "triumph-melody.mp3" { volume: 0.7, loop: false }
+    
+    video nexus_intro = "quantum-nexus-intro.mp4" { autoplay: true, controls: false }
+    video portal_sequence = "portal-opening.mp4" { autoplay: false, controls: true }
+}
+
+# ===== CHARACTER ATTRIBUTES =====
+vars {
+    character_name = "Quantum Walker"
+    character_class = "Explorer"
+    
+    # Core progression
+    level = 1
+    experience = 0
+    reputation = 0
+    
+    # Health and resources
+    health = 100
+    max_health = 100
+    energy = 50
+    max_energy = 50
+    sanity = 100
+    max_sanity = 100
+    
+    # Story progression flags
+    nexus_discovered = false
+    first_portal_used = false
+    crystal_fragments_found = 0
+    ancient_knowledge_level = 0
+    void_encounters = 0
+    
+    # Relationship tracking
+    ally_trust = 0
+    enemy_fear = 0
+    neutral_respect = 0
+    
+    # Quest states
+    main_quest_stage = 0
+    side_quests_completed = 0
+    hidden_secrets_found = 0
+    
+    # Temporal mechanics
+    timeline_shifts = 0
+    paradox_risk = 0
+    temporal_stability = 100
+    
+    # Character development
+    wisdom_gained = false
+    power_corrupted = false
+    sacrifice_made = false
+    true_ending_unlocked = false
+}
+
+# ===== CHARACTER STATS =====
+stats {
+    # Primary attributes
+    intellect = 12
+    intuition = 10
+    willpower = 8
+    charisma = 6
+    
+    # Secondary attributes
+    quantum_affinity = 5
+    void_resistance = 3
+    temporal_sensitivity = 7
+    psychic_defense = 4
+    
+    # Skill progression
+    portal_mastery = 0
+    crystal_attunement = 0
+    void_understanding = 0
+    time_manipulation = 0
+    
+    # Combat stats
+    mental_fortitude = 10
+    reality_anchor = 8
+    dimensional_awareness = 6
+}
+
+# ===== INVENTORY SYSTEM =====
+inventory {
+    # Basic items
+    quantum_scanner = 1
+    energy_cell = 3
+    reality_anchor_device = 1
+    
+    # Collectibles
+    crystal_fragment = 0
+    void_essence = 0
+    temporal_shard = 0
+    ancient_rune = 0
+    
+    # Key items
+    nexus_key = 0
+    portal_stabilizer = 0
+    void_compass = 0
+    time_crystal = 0
+    
+    # Consumables
+    sanity_restore_serum = 2
+    energy_booster = 3
+    health_nanobots = 2
+    
+    # Special artifacts
+    quantum_codex = 0
+    void_mirror = 0
+    temporal_crown = 0
+    nexus_core = 0
+}
+
+# ===== STORY BEGINNING =====
+scene prologue {
+    show video nexus_intro
+    play audio ambient_hum
+    show image nexus_bg
+    
+    text: "🌌 THE QUANTUM NEXUS CHRONICLES 🌌"
+    text: "=================================="
+    
+    text: "In the year 2387, humanity discovered the Quantum Nexus - a dimensional hub connecting infinite realities. You are {character_name}, a {character_class} tasked with exploring this mysterious realm."
+    
+    text: "Your quantum scanner detects massive energy fluctuations ahead. The very fabric of space-time seems to pulse with otherworldly power."
+    
+    set nexus_discovered = true
+    set experience = experience + 50
+    
+    text: "Experience gained: +50 (Total: {experience})" [LOG: Journey begins at the Quantum Nexus]
+    
+    # Character creation choices
+    text: "Before venturing deeper, you must attune yourself to the quantum frequencies. Choose your initial specialization:"
+    
+    choice "🧠 Enhance Intellect (Scientist path)" -> scientist_path
+    choice "👁️ Boost Intuition (Mystic path)" -> mystic_path  
+    choice "💪 Strengthen Willpower (Guardian path)" -> guardian_path
+    choice "🗣️ Develop Charisma (Diplomat path)" -> diplomat_path
+}
+
+# ===== CHARACTER PATH SPECIALIZATIONS =====
+scene scientist_path {
+    show image crystal_shard
+    play audio crystal_chime
+    
+    text: "🧠 SCIENTIST SPECIALIZATION"
+    text: "You focus your mind on understanding the quantum mechanics governing this realm."
+    
+    set character_class = "Quantum Scientist"
+    set intellect = intellect + 5
+    set quantum_affinity = quantum_affinity + 3
+    set portal_mastery = portal_mastery + 2
+    set quantum_scanner = quantum_scanner + 1
+    
+    text: "Your enhanced intellect ({intellect}) allows you to perceive quantum patterns others cannot see."
+    text: "Quantum Affinity increased to {quantum_affinity}."
+    text: "You've gained an advanced quantum scanner!" [inventory ++quantum_scanner]
+    
+    choice "Analyze the nexus structure" -> nexus_analysis
+    choice "Search for quantum anomalies" -> anomaly_hunt
+    choice "Study the portal mechanisms" -> portal_study
+}
+
+scene mystic_path {
+    show image ancient_tome
+    play audio void_whisper
+    
+    text: "👁️ MYSTIC SPECIALIZATION"
+    text: "You open your mind to the mystical energies flowing through the dimensional barriers."
+    
+    set character_class = "Void Mystic"
+    set intuition = intuition + 5
+    set void_resistance = void_resistance + 3
+    set temporal_sensitivity = temporal_sensitivity + 2
+    set void_compass = void_compass + 1
+    
+    text: "Your heightened intuition ({intuition}) reveals hidden truths about the void between worlds."
+    text: "Void Resistance increased to {void_resistance}."
+    text: "You've acquired a mystical void compass!" [inventory ++void_compass]
+    
+    choice "Commune with void entities" -> void_communion
+    choice "Seek ancient knowledge" -> ancient_wisdom
+    choice "Meditate on temporal flows" -> time_meditation
+}
+
+scene guardian_path {
+    show image nexus_bg
+    
+    text: "💪 GUARDIAN SPECIALIZATION"
+    text: "You steel yourself against the chaotic forces that threaten dimensional stability."
+    
+    set character_class = "Reality Guardian"
+    set willpower = willpower + 5
+    set mental_fortitude = mental_fortitude + 3
+    set reality_anchor = reality_anchor + 2
+    set portal_stabilizer = portal_stabilizer + 1
+    
+    text: "Your iron willpower ({willpower}) serves as an anchor against reality distortions."
+    text: "Mental Fortitude increased to {mental_fortitude}."
+    text: "You've obtained a portal stabilizer device!" [inventory ++portal_stabilizer]
+    
+    choice "Reinforce dimensional barriers" -> barrier_reinforcement
+    choice "Hunt dangerous anomalies" -> anomaly_combat
+    choice "Protect other explorers" -> rescue_mission
+}
+
+scene diplomat_path {
+    text: "🗣️ DIPLOMAT SPECIALIZATION"
+    text: "You prepare to negotiate with the various entities inhabiting the quantum realm."
+    
+    set character_class = "Dimensional Diplomat"
+    set charisma = charisma + 5
+    set psychic_defense = psychic_defense + 3
+    set dimensional_awareness = dimensional_awareness + 2
+    set ancient_rune = ancient_rune + 3
+    
+    text: "Your enhanced charisma ({charisma}) opens doors to communication across dimensions."
+    text: "Psychic Defense increased to {psychic_defense}."
+    text: "You've learned three ancient communication runes!" [inventory ++ancient_rune, inventory ++ancient_rune, inventory ++ancient_rune]
+    
+    choice "Establish contact with nexus entities" -> entity_diplomacy
+    choice "Negotiate safe passage" -> safe_passage
+    choice "Form alliances across dimensions" -> alliance_building
+}
+
+# ===== SCIENTIST PATH BRANCHES =====
+scene nexus_analysis {
+    text: "🔬 NEXUS STRUCTURAL ANALYSIS"
+    
+    # Complex conditional based on stats and items
+    if intellect >= 17 and quantum_scanner >= 2 {
+        text: "Your advanced intellect and superior equipment reveal the nexus's deepest secrets."
+        
+        macro deep_analysis() {
+            set ancient_knowledge_level = ancient_knowledge_level + 3
+            set crystal_fragments_found = crystal_fragments_found + 2
+            set experience = experience + 150
+            text: "BREAKTHROUGH: You discover the nexus operates on 11-dimensional mathematics!"
+            return "major_discovery"
+        }
+        
+        set analysis_result = deep_analysis()
+        text: "This knowledge will prove invaluable in your journey." [ACHIEVEMENT: Quantum Theorist]
+        
+        choice "Apply knowledge to unlock hidden areas" -> hidden_nexus_chamber
+        choice "Share discovery with other explorers" -> knowledge_sharing
+        
+    } else if intellect >= 12 {
+        text: "Your analysis reveals several interesting patterns in the quantum field fluctuations."
+        
+        set ancient_knowledge_level = ancient_knowledge_level + 1
+        set experience = experience + 75
+        
+        text: "You identify three stable portal coordinates."
+        choice "Investigate Portal Alpha (Low energy signature)" -> portal_alpha
+        choice "Investigate Portal Beta (Moderate energy signature)" -> portal_beta
+        choice "Investigate Portal Gamma (High energy signature)" -> portal_gamma
+        
+    } else {
+        text: "The quantum mathematics are beyond your current understanding."
+        text: "You need more knowledge before attempting such complex analysis."
+        
+        choice "Seek additional training" -> skill_training
+        choice "Find a mentor" -> mentor_search
+        choice "Continue with basic exploration" -> basic_exploration
+    }
+}
+
+scene anomaly_hunt {
+    text: "🔍 QUANTUM ANOMALY DETECTION"
+    
+    # Multi-layered branching with inventory checks
+    if quantum_scanner >= 2 and energy_cell >= 2 {
+        text: "Your enhanced scanner detects multiple anomalies throughout the nexus."
+        
+        # Use energy cells for deep scan
+        set energy_cell = energy_cell - 2
+        text: "Energy cells consumed: 2 (Remaining: {energy_cell})"
+        
+        # Macro for anomaly classification
+        macro classify_anomalies() {
+            text: "Anomaly Classification Complete:"
+            text: "- Type A: Temporal distortions (3 detected)"
+            text: "- Type B: Dimensional rifts (2 detected)"  
+            text: "- Type C: Void incursions (1 detected)"
+            return 6
+        }
+        
+        set total_anomalies = classify_anomalies()
+        
+        choice "Investigate temporal distortions (Safest)" -> temporal_anomalies
+        choice "Explore dimensional rifts (Moderate risk)" -> dimensional_rifts
+        choice "Confront void incursion (Dangerous)" -> void_incursion
+        
+    } else {
+        text: "Your basic scanner detects some unusual readings, but lacks the power for detailed analysis."
+        
+        if energy_cell > 0 {
+            choice "Use an energy cell to boost scanner power" -> boosted_scan
+        }
+        
+        choice "Follow the strongest signal" -> mystery_signal
+        choice "Map the weaker anomalies first" -> safe_mapping
+    }
+}
+
+scene portal_study {
+    text: "🌀 PORTAL MECHANISM RESEARCH"
+    
+    show image portal_glow
+    play audio portal_sound
+    
+    # Complex branching based on multiple conditions
+    if portal_mastery >= 2 and intellect >= 15 {
+        text: "Your expertise allows you to understand the portal's quantum entanglement matrix."
+        
+        # Advanced portal manipulation
+        macro portal_hack() {
+            text: "You successfully hack the portal's targeting system!"
+            set portal_mastery = portal_mastery + 2
+            set experience = experience + 100
+            text: "You can now access previously unreachable dimensions."
+            return "hack_success"
+        }
+        
+        set hack_result = portal_hack()
+        
+        choice "Access the Void Dimension" -> void_dimension
+        choice "Enter the Time Nexus" -> time_nexus
+        choice "Explore the Mirror Realm" -> mirror_realm
+        
+    } else if quantum_affinity >= 8 {
+        text: "Your quantum affinity resonates with the portal's energy field."
+        
+        set portal_mastery = portal_mastery + 1
+        set quantum_affinity = quantum_affinity + 1
+        
+        text: "You learn to stabilize portal connections."
+        
+        choice "Create a stable portal network" -> portal_network
+        choice "Enhance portal efficiency" -> portal_optimization
+        
+    } else {
+        text: "The portal's complexity overwhelms your current understanding."
+        text: "You observe basic operational patterns but cannot manipulate them."
+        
+        choice "Study portal activation sequences" -> basic_portal_study
+        choice "Collect portal energy samples" -> energy_sampling
+    }
+}
+
+# ===== MYSTIC PATH BRANCHES =====
+scene void_communion {
+    show image void_entity
+    play audio void_whisper
+    
+    text: "👁️ COMMUNION WITH THE VOID"
+    text: "You reach out with your consciousness into the spaces between dimensions."
+    
+    # Sanity-based risk/reward system
+    if void_resistance >= 6 and sanity >= 80 {
+        text: "Your strong void resistance protects you as you make contact with ancient entities."
+        
+        macro void_dialogue() {
+            text: "VOID ENTITY: 'Mortal... you seek knowledge of the spaces between?'"
+            text: "The entity's voice resonates directly in your mind."
+            set void_understanding = void_understanding + 3
+            set ancient_knowledge_level = ancient_knowledge_level + 2
+            set sanity = sanity - 10
+            text: "Sanity reduced by communion: {sanity}/{max_sanity}"
+            return "successful_contact"
+        }
+        
+        set communion_result = void_dialogue()
+        
+        choice "Ask about the nexus's true purpose" -> nexus_truth
+        choice "Request knowledge of hidden paths" -> hidden_paths
+        choice "Inquire about the void's nature" -> void_nature
+        
+    } else if intuition >= 15 {
+        text: "Your intuition guides you through the dangerous void communion."
+        
+        set void_understanding = void_understanding + 1
+        set sanity = sanity - 20
+        set void_essence = void_essence + 1
+        
+        text: "You gain basic void knowledge but at a cost to your sanity."
+        text: "Void essence acquired!" [inventory ++void_essence]
+        
+        choice "Continue deeper communion (Risky)" -> deep_void_communion
+        choice "Withdraw and process the knowledge" -> void_knowledge_processing
+        
+    } else {
+        text: "The void's alien presence overwhelms your unprepared mind."
+        
+        set sanity = sanity - 30
+        set void_encounters = void_encounters + 1
+        
+        if sanity <= 50 {
+            text: "Your sanity is dangerously low! You must find a way to restore it."
+            choice "Use sanity restoration serum" -> use_sanity_serum
+            choice "Seek immediate help" -> emergency_help
+        } else {
+            text: "You retreat from the void, shaken but intact."
+            choice "Rest and recover" -> recovery_rest
+            choice "Try a different approach" -> alternative_approach
+        }
+    }
+}
+
+# ===== CONVERGENCE SCENES =====
+scene nexus_core_chamber {
+    show image nexus_bg
+    play audio victory_theme
+    
+    text: "🌟 THE NEXUS CORE CHAMBER"
+    text: "========================="
+    text: "After your journey through the quantum realm, you finally reach the heart of the nexus."
+    
+    # Multiple paths converge here based on player choices
+    if ancient_knowledge_level >= 5 {
+        text: "Your vast knowledge allows you to understand the true purpose of the nexus."
+        set wisdom_gained = true
+    }
+    
+    if reputation >= 100 {
+        text: "Your legendary reputation precedes you - entities from across dimensions gather to witness your arrival."
+        set true_ending_unlocked = true
+    }
+    
+    if void_understanding >= 3 and temporal_sensitivity >= 10 {
+        text: "Your mastery of void and time grants you unprecedented power over the nexus."
+        choice "Reshape reality itself" -> reality_reshaping
+    }
+    
+    # Final choice based on accumulated stats and story flags
+    if wisdom_gained and not power_corrupted {
+        choice "Use wisdom to guide others" -> wisdom_ending
+    }
+    
+    if true_ending_unlocked {
+        choice "Transcend dimensional boundaries" -> transcendence_ending
+    }
+    
+    choice "Preserve the nexus as it is" -> preservation_ending
+    choice "Return to your home dimension" -> return_home_ending
+}
+
+# ===== MULTIPLE ENDINGS =====
+scene wisdom_ending {
+    text: "🧙 THE WISDOM ENDING"
+    text: "Your journey through the nexus has granted you profound wisdom."
+    text: "You choose to become a guide for future explorers, sharing your knowledge."
+    text: "The nexus becomes a beacon of learning and discovery." [ACHIEVEMENT: Sage of the Nexus]
+    
+    choice "Begin your new role as guide" -> guide_epilogue
+}
+
+scene transcendence_ending {
+    text: "✨ THE TRANSCENDENCE ENDING"
+    text: "Your reputation and achievements have unlocked the nexus's ultimate secret."
+    text: "You transcend physical existence, becoming one with the quantum realm itself."
+    text: "Your consciousness expands across infinite dimensions." [ACHIEVEMENT: Quantum Ascension]
+    
+    choice "Embrace your new existence" -> transcendence_epilogue
+}
+
+scene preservation_ending {
+    text: "🛡️ THE PRESERVATION ENDING"
+    text: "You choose to maintain the nexus's natural balance."
+    text: "Your actions ensure the stability of countless dimensions."
+    text: "Future generations will benefit from your wisdom." [ACHIEVEMENT: Guardian of Balance]
+    
+    choice "Continue protecting the nexus" -> guardian_epilogue
+}
+
+scene return_home_ending {
+    text: "🏠 THE HOMECOMING ENDING"
+    text: "Despite all you've learned, you choose to return to your home dimension."
+    text: "You bring back invaluable knowledge to benefit humanity."
+    text: "Your discoveries revolutionize science and philosophy." [ACHIEVEMENT: Pioneer of Knowledge]
+    
+    choice "Share your discoveries with the world" -> pioneer_epilogue
+}
+
+# ===== EPILOGUE SCENES =====
+scene guide_epilogue {
+    text: "EPILOGUE: THE GUIDE"
+    text: "Years pass as you help countless explorers navigate the nexus safely."
+    text: "Your wisdom prevents disasters and opens new paths of discovery."
+    text: "The nexus flourishes under your guidance."
+    
+    text: "Final Statistics:"
+    text: "- Explorers guided: 1,247"
+    text: "- Dimensions mapped: 89"
+    text: "- Lives saved: 312"
+    text: "- Knowledge preserved: Immeasurable"
+    
+    choice "Start a new journey" -> prologue [RESET]
+}
+
+scene transcendence_epilogue {
+    text: "EPILOGUE: THE TRANSCENDENT"
+    text: "Your consciousness expands beyond mortal comprehension."
+    text: "You experience existence from infinite perspectives simultaneously."
+    text: "Time and space become malleable concepts under your influence."
+    
+    text: "You have become something beyond human understanding."
+    text: "The nexus is now part of you, and you are part of it."
+    
+    choice "Begin anew in a different reality" -> prologue [RESET]
+}
+
+scene guardian_epilogue {
+    text: "EPILOGUE: THE ETERNAL GUARDIAN"
+    text: "You take up permanent residence in the nexus core."
+    text: "Your vigilance maintains the delicate balance between dimensions."
+    text: "Threats are neutralized before they can cause harm."
+    
+    text: "The nexus remains stable and secure under your protection."
+    text: "Your sacrifice ensures the safety of countless worlds."
+    
+    choice "Continue your eternal watch" -> prologue [RESET]
+}
+
+scene pioneer_epilogue {
+    text: "EPILOGUE: THE PIONEER"
+    text: "Your return to Earth sparks a new age of discovery."
+    text: "Humanity develops new technologies based on your findings."
+    text: "The boundaries between dimensions begin to blur."
+    
+    text: "You have changed the course of human history."
+    text: "Future generations will remember you as the one who opened the doors to infinity."
+    
+    choice "Explore what comes next" -> prologue [RESET]
+}
+
+# ===== PLACEHOLDER SCENES FOR COMPLEX BRANCHES =====
+scene hidden_nexus_chamber {
+    text: "You discover a hidden chamber containing ancient artifacts."
+    set hidden_secrets_found = hidden_secrets_found + 1
+    choice "Continue exploring" -> nexus_core_chamber
+}
+
+scene knowledge_sharing {
+    text: "You share your discoveries with other explorers."
+    set reputation = reputation + 25
+    choice "Continue your research" -> nexus_core_chamber
+}
+
+scene portal_alpha {
+    text: "Portal Alpha leads to a peaceful dimension of crystalline structures."
+    set crystal_fragment = crystal_fragment + 2
+    choice "Return to the nexus" -> nexus_core_chamber
+}
+
+scene portal_beta {
+    text: "Portal Beta opens to a dimension where time flows differently."
+    set temporal_shard = temporal_shard + 1
+    choice "Return to the nexus" -> nexus_core_chamber
+}
+
+scene portal_gamma {
+    text: "Portal Gamma reveals a dangerous but resource-rich dimension."
+    set experience = experience + 200
+    set health = health - 20
+    choice "Return to the nexus" -> nexus_core_chamber
+}
+
+scene void_dimension {
+    text: "The Void Dimension challenges your sanity but grants profound insights."
+    set void_understanding = void_understanding + 2
+    set sanity = sanity - 15
+    choice "Return to the nexus" -> nexus_core_chamber
+}
+
+scene time_nexus {
+    text: "The Time Nexus allows you to witness the nexus's creation."
+    set ancient_knowledge_level = ancient_knowledge_level + 3
+    choice "Return to the nexus" -> nexus_core_chamber
+}
+
+scene mirror_realm {
+    text: "The Mirror Realm shows you alternate versions of yourself."
+    set experience = experience + 100
+    choice "Return to the nexus" -> nexus_core_chamber
+}
+
+scene entity_diplomacy {
+    text: "You successfully establish diplomatic relations with nexus entities."
+    set ally_trust = ally_trust + 20
+    set reputation = reputation + 30
+    choice "Continue diplomacy" -> nexus_core_chamber
+}
+
+scene safe_passage {
+    text: "You negotiate safe travel routes through dangerous areas."
+    set reputation = reputation + 15
+    choice "Continue exploring" -> nexus_core_chamber
+}
+
+scene alliance_building {
+    text: "You form powerful alliances across multiple dimensions."
+    set ally_trust = ally_trust + 35
+    set reputation = reputation + 50
+    choice "Leverage your alliances" -> nexus_core_chamber
+}

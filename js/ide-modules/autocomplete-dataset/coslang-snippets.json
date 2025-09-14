@@ -1,0 +1,134 @@
+[
+  {
+    "label": "🎮 Complete Story Template",
+    "insertText": "title: \"${1:Epic Adventure}\"\nauthor: \"${2:Your Name}\"\nversion: \"${3:1.0.0}\"\n\nvars {\n    player_name = \"${4:Hero}\"\n    health = 100\n    gold = 0\n    score = 0\n}\n\nstats {\n    strength = 5\n    agility = 3\n    intelligence = 2\n    charisma = 4\n}\n\ninventory {\n    sword = 1\n    potion = 2\n    key = 0\n}\n\nscene start {\n    text: \"Welcome to your epic adventure, {player_name}!\"\n    choice \"Begin your journey\" -> adventure\n    choice \"Check your stats\" -> stats_check\n}\n\nscene adventure {\n    text: \"You find yourself at a crossroads. Your health is {health} and you have {gold} gold.\"\n    if health > 50 {\n        text: \"You're feeling strong and ready for anything!\"\n        choice \"Take the dangerous path\" -> dangerous_path\n        choice \"Take the safe path\" -> safe_path\n    } else {\n        text: \"You're feeling tired and need to rest.\"\n        choice \"Find a safe place to rest\" -> rest_scene\n    }\n}\n\nscene stats_check {\n    text: \"Your current stats:\\nStrength: {strength}\\nAgility: {agility}\\nIntelligence: {intelligence}\\nCharisma: {charisma}\"\n    choice \"Return to adventure\" -> adventure\n}\n\nscene dangerous_path {\n    text: \"You chose the dangerous path!\"\n    set health = health - 20\n    set gold = gold + 50\n    text: \"You lost some health but found treasure! Health: {health}, Gold: {gold}\"\n    choice \"Continue exploring\" -> adventure\n}\n\nscene safe_path {\n    text: \"You chose the safe path.\"\n    set health = health + 10\n    text: \"You feel refreshed! Health: {health}\"\n    choice \"Continue exploring\" -> adventure\n}\n\nscene rest_scene {\n    text: \"You find a cozy inn and rest for the night.\"\n    set health = 100\n    text: \"You're fully rested! Health: {health}\"\n    choice \"Continue your adventure\" -> adventure\n}",
+    "kind": "snippet",
+    "detail": "🚀 Complete story template with metadata, variables, stats, inventory, scenes, and choices."
+  },
+  {
+    "label": "Scene Block",
+    "insertText": "scene ${1:scene_id} {\n    text: \"${2:Scene narrative text}\"\n    set ${3:variable} = ${4:value}\n    choice \"${5:Choice text}\" -> ${6:target_scene}\n}",
+    "kind": "snippet",
+    "detail": "Basic scene block with text, variable, and choice."
+  },
+  {
+    "label": "If/Else Block",
+    "insertText": "if ${1:condition} {\n    text: \"${2:If text}\"\n    choice \"${3:If choice}\" -> ${4:if_target}\n} else {\n    text: \"${5:Else text}\"\n    choice \"${6:Else choice}\" -> ${7:else_target}\n}",
+    "kind": "snippet",
+    "detail": "Conditional block with if/else branches and choices."
+  },
+  {
+    "label": "Variable Assignment",
+    "insertText": "set ${1:variable} = ${2:value}",
+    "kind": "snippet",
+    "detail": "Assign a value to a variable."
+  },
+  {
+    "label": "Variable Modification",
+    "insertText": "set ${1:gold} = ${1:gold} + ${2:10}\nset ${3:health} = ${3:health} - ${4:5}",
+    "kind": "snippet",
+    "detail": "Modify variables with mathematical operations."
+  },
+  {
+    "label": "Choice",
+    "insertText": "choice \"${1:Choice text}\" -> ${2:target_scene}",
+    "kind": "snippet",
+    "detail": "Single choice line."
+  },
+  {
+    "label": "Text Block",
+    "insertText": "text: \"${1:Narrative text with {variable} interpolation.}\"",
+    "kind": "snippet",
+    "detail": "Narrative text with variable interpolation."
+  },
+  {
+    "label": "Macro Definition",
+    "insertText": "macro ${1:heal}(target, amount) {\n    set {target}_health = {target}_health + {amount}\n    text: \"Healed {target} for {amount} points!\"\n}",
+    "kind": "snippet",
+    "detail": "Define a macro with arguments."
+  },
+  {
+    "label": "Macro Call",
+    "insertText": "[${1:heal}(player, 10)]",
+    "kind": "snippet",
+    "detail": "Call a macro in a block."
+  },
+  {
+    "label": "Achievement Tag",
+    "insertText": "choice \"${1:Find the artifact}\" -> ${2:artifact_scene} [ACHIEVEMENT:${3:Found Artifact}]",
+    "kind": "snippet",
+    "detail": "Choice with achievement tag."
+  },
+  {
+    "label": "Event Tag",
+    "insertText": "choice \"${1:Trigger alarm}\" -> ${2:alert_scene} [EVENT:${3:AlarmTriggered}]",
+    "kind": "snippet",
+    "detail": "Choice with event tag."
+  },
+  {
+    "label": "Inventory Block",
+    "insertText": "inventory {\n    sword = 1\n    potion = 2\n    key = 0\n}",
+    "kind": "snippet",
+    "detail": "Inventory block with items."
+  },
+  {
+    "label": "Stats Block",
+    "insertText": "stats {\n    strength = 5\n    agility = 3\n    intelligence = 2\n}",
+    "kind": "snippet",
+    "detail": "Stats block with attributes."
+  },
+  {
+    "label": "Log Tag",
+    "insertText": "[LOG: \"${1:You found a secret!}\"]",
+    "kind": "snippet",
+    "detail": "Log tag for story events."
+  },
+  {
+    "label": "🎲 Dice Roll",
+    "insertText": "[ROLL ${1:2d6+1}]",
+    "kind": "snippet",
+    "detail": "🎲 Dice roll for random events."
+  },
+  {
+    "label": "⚡ Advanced Macro",
+    "insertText": "macro ${1:heal}(target, amount) {\n    set {target}_health = {target}_health + {amount}\n    if {target}_health > 100 {\n        set {target}_health = 100\n    }\n    text: \"Healed {target} for {amount} points! Current health: {target}_health\"\n}",
+    "kind": "snippet",
+    "detail": "⚡ Advanced macro with health clamping and feedback."
+  },
+  {
+    "label": "🏆 Achievement System",
+    "insertText": "choice \"${1:Find the ancient artifact}\" -> ${2:artifact_scene} [ACHIEVEMENT:${3:Ancient Discoverer}]\nchoice \"${4:Defeat the boss}\" -> ${5:boss_scene} [ACHIEVEMENT:${6:Boss Slayer}]\nchoice \"${7:Complete the quest}\" -> ${8:quest_complete} [ACHIEVEMENT:${9:Quest Master}]",
+    "kind": "snippet",
+    "detail": "🏆 Multiple choices with achievement tags."
+  },
+  {
+    "label": "🎭 Complex Conditional",
+    "insertText": "if {health} > 50 and {strength} > 3 {\n    text: \"You're strong and healthy enough to face this challenge!\"\n    choice \"Fight the enemy\" -> combat_scene\n} else if {health} > 30 {\n    text: \"You're not at full strength, but you can still try.\"\n    choice \"Attempt the challenge\" -> risky_combat\n    choice \"Find another way\" -> alternative_path\n} else {\n    text: \"You're too weak for this challenge.\"\n    choice \"Rest and recover\" -> rest_scene\n}",
+    "kind": "snippet",
+    "detail": "🎭 Complex conditional logic with multiple branches."
+  },
+  {
+    "label": "📊 Stats Display",
+    "insertText": "text: \"Your current status:\\n❤️ Health: {health}/100\\n💰 Gold: {gold}\\n🏆 Score: {score}\\n💪 Strength: {strength}\\n🏃 Agility: {agility}\\n🧠 Intelligence: {intelligence}\\n🎭 Charisma: {charisma}\"",
+    "kind": "snippet",
+    "detail": "📊 Beautiful stats display with emojis."
+  },
+  {
+    "label": "🎒 Inventory Management",
+    "insertText": "text: \"Your inventory:\"\nif sword > 0 {\n    text: \"⚔️ Sword: {sword}\"\n}\nif potion > 0 {\n    text: \"🧪 Health Potions: {potion}\"\n}\nif key > 0 {\n    text: \"🗝️ Keys: {key}\"\n}\nif map > 0 {\n    text: \"🗺️ Map: {map}\"\n}",
+    "kind": "snippet",
+    "detail": "🎒 Dynamic inventory display with conditional items."
+  },
+  {
+    "label": "🎮 Game Loop",
+    "insertText": "scene game_loop {\n    text: \"What would you like to do?\"\n    choice \"Check stats\" -> stats_display\n    choice \"Check inventory\" -> inventory_display\n    choice \"Continue adventure\" -> adventure\n    choice \"Save and quit\" -> save_game\n}",
+    "kind": "snippet",
+    "detail": "🎮 Reusable game loop with common actions."
+  },
+  {
+    "label": "🔍 Search Function",
+    "insertText": "macro search_area(area_name) {\n    text: \"You search the {area_name} carefully...\"\n    [ROLL 1d6]\n    if [ROLL_RESULT] >= 4 {\n        text: \"You found something useful!\"\n        set gold = gold + 10\n        choice \"Take the treasure\" -> continue\n    } else {\n        text: \"You found nothing of interest.\"\n        choice \"Continue exploring\" -> continue\n    }\n}",
+    "kind": "snippet",
+    "detail": "🔍 Search macro with dice roll and conditional rewards."
+  }
+] 

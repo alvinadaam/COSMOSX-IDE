@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CosAI - Coslang Learning Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    
+    <!-- Modular CSS Files -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/chat.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Toggle Button (Mobile) -->
+        <div class="sidebar-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-stars"></i>
+                </div>
+                <div class="logo-text">CosAI</div>
+            </div>
+            
+            <div class="connection-status">
+                <div class="status-indicator status-disconnected"></div>
+                <div>Connecting to Ollama...</div>
+                <button class="test-connection-btn" id="test-connection" style="display: none;">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                <div class="sidebar-title">Learning Topics</div>
+                <ul class="topic-list">
+                    <li class="topic-item">
+                        <i class="fas fa-book"></i>
+                        <span>Story Structure & Scenes</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-cogs"></i>
+                        <span>Variables & State Management</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-list"></i>
+                        <span>Choices & Branching</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-code-branch"></i>
+                        <span>Conditional Logic (if/else)</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-tags"></i>
+                        <span>Tags & Events</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-magic"></i>
+                        <span>Macros & Functions</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-database"></i>
+                        <span>Data Structures & Arrays</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-random"></i>
+                        <span>Random Events & Probability</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Time-based Events</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-users"></i>
+                        <span>Character Development</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-map"></i>
+                        <span>World Building & Locations</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-puzzle-piece"></i>
+                        <span>Puzzle Design</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Combat Systems</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Economy & Trading</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-heart"></i>
+                        <span>Relationship Systems</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Practice Exercises</div>
+                <ul class="topic-list">
+                    <li class="topic-item">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Adventure Games</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-trophy"></i>
+                        <span>Achievement Systems</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Stats & Inventory</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-dungeon"></i>
+                        <span>RPG Mechanics</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-chess"></i>
+                        <span>Strategy Games</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-mystery"></i>
+                        <span>Mystery Stories</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-romance"></i>
+                        <span>Visual Novels</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-horror"></i>
+                        <span>Horror Stories</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-sci-fi"></i>
+                        <span>Sci-Fi Adventures</span>
+                    </li>
+                    <li class="topic-item">
+                        <i class="fas fa-fantasy"></i>
+                        <span>Fantasy Worlds</span>
+                    </li>
+                </ul>
+            </div>
+            </div>
+            
+            <div class="quick-examples" id="quick-examples">
+                <div class="example-header" id="example-header">
+                    <div class="example-title">
+                        <i class="fas fa-bolt"></i>
+                        <span>Quick Examples</span>
+                    </div>
+                    <button class="toggle-examples-btn" id="toggle-examples">
+                        <i class="fas fa-chevron-up"></i>
+                    </button>
+                </div>
+                <div class="example-content" id="example-content">
+                    <div class="example-item">Show me a basic Coslang story structure</div>
+                    <div class="example-item">How do I use variables and choices?</div>
+                    <div class="example-item">Explain if/else logic in Coslang</div>
+                    <div class="example-item">How do I create achievements and events?</div>
+                </div>
+            </div>
+            
+            <!-- Scroll to top button -->
+            <button class="scroll-to-top" id="scroll-to-top" style="display: none;">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+        </div>
+        
+        <!-- Main Chat Area -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="chat-title">Coslang Learning Assistant</div>
+                <div class="model-info">
+                    <i class="fas fa-microchip"></i>
+                    <span>Phi-1.5B | Coslang v3.2</span>
+                </div>
+            </div>
+            
+            <div class="chat-messages">
+                <!-- Welcome Message -->
+                <div class="message bot-message fade-in">
+                    <div class="message-header">
+                        <div class="message-avatar bot-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-name">CosAI</div>
+                    </div>
+                    <div class="message-content bot-content">
+                        <p>Hello! I'm your Coslang learning assistant. 🤖</p>
+                        <p>I can help you create interactive stories, understand Coslang syntax, debug your stories, and provide examples. What would you like to learn today?</p>
+                        <p>Try asking:</p>
+                        <ul style="padding-left: 20px; margin: 10px 0;">
+                            <li>"Show me a basic Coslang story structure"</li>
+                            <li>"How do I use variables and choices?"</li>
+                            <li>"Explain if/else logic in Coslang"</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Typing Indicator -->
+                <div class="message bot-message" id="typing-indicator" style="display: none;">
+                    <div class="message-header">
+                        <div class="message-avatar bot-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-name">CosAI</div>
+                    </div>
+                    <div class="typing-indicator">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Input Area -->
+            <div class="input-container">
+                <div class="input-area">
+                    <textarea id="user-input" placeholder="Ask a question about Coslang..." rows="1"></textarea>
+                    <button class="send-button" id="send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    
+    <!-- Modular JavaScript Files -->
+    <script src="scripts/scrollbar-system.js"></script>
+    <script src="scripts/performance.js"></script>
+    <script src="scripts/main.js"></script>
+    <script src="scripts/ollama.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/utils.js"></script>
+</body>
+</html> 

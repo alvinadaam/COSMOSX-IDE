@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BigDebugger Dashboard</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2><i class="fas fa-bug"></i> BigDebugger</h2>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><button class="nav-btn" data-section="docs"><i class="fas fa-book"></i> Docs</button></li>
+        <li><button class="nav-btn" data-section="engine"><i class="fas fa-cog"></i> Engine Tests</button></li>
+        <li><button class="nav-btn" data-section="tests"><i class="fas fa-vial"></i> CosLang Tests</button></li>
+        <li><button class="nav-btn" data-section="reports"><i class="fas fa-chart-bar"></i> Reports</button></li>
+      </ul>
+    </nav>
+  </aside>
+  <main class="main">
+    <div id="main-content">
+      <div id="sidebar">
+        <!-- The sidebar content is removed as per the new_code -->
+      </div>
+      <div id="content">
+        <div id="status-bar">
+          <span>Server: <span id="server-health-status" class="status-warn">Checking...</span></span>
+          <span>Engine: <span id="engine-status-value" class="status-warn">Idle</span></span>
+        </div>
+        <h1>BigDebugger Dashboard</h1>
+        <div id="section-docs" class="section" style="display:none"></div>
+        <div id="section-engine" class="section"></div>
+        <div id="section-tests" class="section"></div>
+        <div id="section-reports" class="section">
+          <!-- Reports content rendered by JS -->
+          <div class="stable-badge">BigDebugger 1.0 <span class="stable">Stable</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-watermark">BigDebugger &copy; 2024 &mdash; CosmosX IDE</div>
+  </main>
+  <script type="module" src="js/dashboard.js"></script>
+</body>
+</html> 

@@ -1,0 +1,265 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(120deg, #1f6feb 0%, #0d1117 100%);
+  color: #f0f6fc;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  background: rgba(20, 24, 34, 0.98);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(31, 111, 235, 0.15);
+  padding: 32px 24px 24px 24px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.logo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 0 16px #58a6ff88);
+}
+
+h1, h2, h3 {
+  color: #1f6feb;
+  margin-top: 0;
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+
+.version {
+  background: #1f6feb;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-left: 12px;
+}
+
+.subtitle {
+  color: #8b949e;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.feature-card {
+  background: #232a36;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  border-left: 4px solid #1f6feb;
+}
+
+.feature-card h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #58a6ff;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.feature-item {
+  background: #1a1f2a;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #2a3140;
+}
+
+.feature-item h4 {
+  color: #58a6ff;
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.feature-item p {
+  color: #c9d1d9;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.feature {
+  background: #1f6feb22;
+  border-left: 4px solid #1f6feb;
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin: 16px 0;
+  color: #c9d1d9;
+  font-size: 1rem;
+}
+
+.feature h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #58a6ff;
+}
+
+.task {
+  background: #21262d;
+  border-left: 4px solid #4caf50;
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin: 16px 0;
+  color: #baffc9;
+  font-size: 1rem;
+}
+
+.task h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #4caf50;
+}
+
+.panel-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 24px 0 8px 0;
+}
+
+.panel {
+  flex: 1 1 220px;
+  background: #161b22;
+  border-radius: 8px;
+  padding: 16px;
+  min-width: 180px;
+  box-shadow: 0 2px 8px rgba(31, 111, 235, 0.07);
+  margin-bottom: 8px;
+  border: 1px solid #2a3140;
+}
+
+.panel h3 {
+  margin: 0 0 8px 0;
+  color: #58a6ff;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #c9d1d9;
+  font-size: 0.98rem;
+}
+
+.panel li {
+  margin-bottom: 4px;
+}
+
+.success {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.error {
+  color: #f44336;
+  font-weight: bold;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 32px;
+  color: #8b949e;
+  font-size: 0.95rem;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 12px;
+}
+
+.footer-link {
+  color: #58a6ff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+
+.footer-link:hover {
+  color: #4a9eff;
+}
+
+.btn-demo {
+  background: #1f6feb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.btn-demo:hover {
+  background: #388bfd;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(31, 111, 235, 0.3);
+}
+
+.demo-preview {
+  background: #161b22;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+  min-height: 60px;
+  color: #c9d1d9;
+  font-family: 'Fira Mono', 'Consolas', monospace;
+  white-space: pre-wrap;
+  border: 1px solid #30363d;
+}
+
+/* Icon styling */
+.fas {
+  color: #58a6ff;
+}
+
+.feature h3 .fas,
+.task h3 .fas {
+  margin-right: 8px;
+}
+
+@media (max-width: 600px) {
+  .container { 
+    padding: 16px; 
+    margin: 20px auto;
+  }
+  .panel-list { 
+    flex-direction: column; 
+  }
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+  .footer-links {
+    flex-direction: column;
+    gap: 12px;
+  }
+} 

@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CosLang Language Reference - CosmosX IDE</title>
+    <link rel="stylesheet" href="learn-assets/learn.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- All scrollbar and color styling is handled in learn-assets/learn.css -->
+    <style>
+      /* Modern, beautiful, and clear code block styling */
+      pre code {
+        background: #181a24;
+        color: #e0e0e0;
+        border-radius: 10px;
+        padding: 1.2em 1.5em;
+        font-size: 1.08em;
+        line-height: 1.6;
+        display: block;
+        overflow-x: auto;
+        box-shadow: 0 2px 12px rgba(77,171,247,0.08);
+        margin-bottom: 1.5em;
+      }
+      .note, .warning, .tip {
+        background: #23244a;
+        color: #ffd43b;
+        border-left: 5px solid #4dabf7;
+        border-radius: 8px;
+        padding: 1em 1.5em;
+        margin: 1.5em 0;
+        font-size: 1em;
+      }
+      .warning { color: #f44336; border-left-color: #f44336; background: #2d2323; }
+      .tip { color: #66bb6a; border-left-color: #66bb6a; background: #1e2d23; }
+      .example-title { font-weight: bold; color: #4dabf7; margin-bottom: 0.5em; }
+      .section-highlight { background: #23244a; border-radius: 8px; padding: 1em; margin: 1.5em 0; }
+      .syntax-highlight { color: #ffd43b; font-weight: bold; }
+      .faq-item { margin-bottom: 1.5em; }
+      .faq-item h3 { color: #4dabf7; }
+      .rules-grid { display: flex; flex-wrap: wrap; gap: 1.5em; }
+      .rule-card { background: #181a24; border-radius: 8px; padding: 1em 1.2em; flex: 1 1 220px; min-width: 220px; }
+      .rule-card h4 { color: #7e57c2; margin-bottom: 0.5em; }
+      .feature-card, .component-card { background: #23244a; border-radius: 8px; padding: 1em; margin-bottom: 1em; }
+      .feature-card h3, .component-card h4 { color: #4dabf7; }
+      .feature-card ul, .component-card ul { margin-left: 1.2em; }
+      .upcoming-feature { background: #23244a; border-radius: 8px; padding: 0.7em 1em; margin-bottom: 0.7em; }
+      .upcoming-feature h4 { color: #ffd43b; }
+      .step-number, .workflow-step .step-number { background: #4dabf7; color: #fff; border-radius: 50%; width: 2em; height: 2em; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 0.7em; }
+      .content-header h1 { color: #4dabf7; }
+      .subtitle { color: #a0a0a0; }
+      .container { background: #121212; }
+      .content { background: #181a24; border-radius: 12px; padding: 2em; }
+      .content-body { max-width: 900px; margin: 0 auto; }
+      .content-body h2, .content-body h3 { color: #7e57c2; }
+      .content-body h4, .content-body h5 { color: #4dabf7; }
+      .content-body ul { margin-left: 1.5em; }
+      .content-body li { margin-bottom: 0.3em; }
+      .architecture-overview, .internal-architecture, .ide-components, .ide-workflow, .ide-features, .structure-diagram { background: #23244a; border-radius: 10px; padding: 1.2em; margin: 1.5em 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-code"></i> CosLang</h2>
+                <p>Language Reference</p>
+            </div>
+            
+            <div class="nav-section">
+                <h3><i class="fas fa-book"></i> Getting Started</h3>
+                <ul>
+                    <li><a href="#overview" class="nav-link">Overview</a></li>
+                    <li><a href="#how-coslang-works" class="nav-link">How CosLang Works</a></li>
+                    <li><a href="#ide-architecture" class="nav-link">IDE Architecture</a></li>
+                    <li><a href="#quickstart" class="nav-link">Quick Start Guide</a></li>
+                    <li><a href="#file-structure" class="nav-link">File Structure</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h3><i class="fas fa-cogs"></i> Core Elements</h3>
+                <ul>
+                    <li><a href="#story-metadata" class="nav-link">Story Metadata</a></li>
+                    <li><a href="#scenes--choices" class="nav-link">Scenes & Choices</a></li>
+                    <li><a href="#variables--state" class="nav-link">Variables & State</a></li>
+                    <li><a href="#conditional-logic" class="nav-link">Conditional Logic</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h3><i class="fas fa-magic"></i> Advanced Features</h3>
+                <ul>
+                    <li><a href="#macros" class="nav-link">Macros</a></li>
+                    <li><a href="#achievements" class="nav-link">Achievement</a></li>
+                    <li><a href="#events" class="nav-link">Events </a></li>
+                    <li><a href="#dice" class="nav-link">Dice & Random</a></li>
+                    <li><a href="#story-log" class="nav-link">Story Log</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h3><i class="fas fa-tools"></i> Reference</h3>
+                <ul>
+                    <li><a href="#full-example" class="nav-link">Full Example</a></li>
+                    <li><a href="#syntax-rules" class="nav-link">Syntax Rules</a></li>
+                    <li><a href="#faq" class="nav-link">FAQ</a></li>
+                    <li><a href="#whats-new" class="nav-link">What's New</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="content">
+            <header class="content-header">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1><i class="fas fa-code"></i> CosLang Language Reference</h1>
+                <p class="subtitle">The complete guide to writing interactive stories in CosmosX</p>
+            </header>
+
+            <div class="content-body">
+                <section id="overview">
+                    <h2><i class="fas fa-info-circle"></i> Overview</h2>
+                    <p>CosLang is a simple, human-readable scripting language for creating interactive stories and games in CosmosX. It's designed for clarity and easy authoring by both writers and developers.</p>
+                    
+                    <div class="architecture-overview">
+                        <h3><i class="fas fa-sitemap"></i> System Architecture</h3>
+                        <p>CosmosX consists of three main components working together:</p>
+                        
+                        <div class="architecture-grid">
+                            <div class="arch-card">
+                                <h4><i class="fas fa-code"></i> CosLang Engine</h4>
+                                <p><strong>Core Runtime:</strong> Parses and executes Coslang stories</p>
+                                <ul>
+                                    <li><strong>Parser:</strong> Converts Coslang text to Abstract Syntax Tree (AST)</li>
+                                    <li><strong>Engine:</strong> Executes story logic, manages state, handles choices</li>
+                                    <li><strong>CosmosUI:</strong> Provides renderable data for UI components</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="arch-card">
+                                <h4><i class="fas fa-edit"></i> CosmosX IDE</h4>
+                                <p><strong>Development Environment:</strong> Complete authoring tool</p>
+                                <ul>
+                                    <li><strong>Monaco Editor:</strong> Syntax highlighting, autocomplete, validation</li>
+                                    <li><strong>Scene Management:</strong> Parse, navigate, duplicate, delete scenes</li>
+                                    <li><strong>Debug Tools:</strong> Variable inspection, performance monitoring</li>
+                                    <li><strong>File Operations:</strong> Save, load, export .coslang files</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="arch-card">
+                                <h4><i class="fas fa-play"></i> Player Engine</h4>
+                                <p><strong>Story Playback:</strong> Interactive story player</p>
+                                <ul>
+                                    <li><strong>UI Rendering:</strong> Dynamic story text, choices, stats display</li>
+                                    <li><strong>State Management:</strong> Save/load game progress</li>
+                                    <li><strong>File Loading:</strong> Drag & drop .coslang files</li>
+                                    <li><strong>Responsive Design:</strong> Mobile-friendly interface</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="data-flow">
+                            <h4><i class="fas fa-arrow-right"></i> Data Flow</h4>
+                            <div class="flow-diagram">
+                                <div class="flow-step">
+                                    <span class="step-label">IDE</span>
+                                    <span class="step-arrow">→</span>
+                                    <span class="step-desc">Coslang Text</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="step-label">Parser</span>
+                                    <span class="step-arrow">→</span>
+                                    <span class="step-desc">AST</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="step-label">Engine</span>
+                                    <span class="step-arrow">→</span>
+                                    <span class="step-desc">Game State</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="step-label">CosmosUI</span>
+                                    <span class="step-arrow">→</span>
+                                    <span class="step-desc">Renderable Data</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="step-label">Player</span>
+                                    <span class="step-arrow">→</span>
+                                    <span class="step-desc">DOM Updates</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="language-features">
+                        <h3><i class="fas fa-star"></i> CosLang Language Features</h3>
+                        <p>CosLang provides a rich set of features for creating complex interactive stories:</p>
+                        
+                        <div class="features-grid">
+                            <div class="feature-item">
+                                <h4>Story Structure</h4>
+                                <ul>
+                                    <li><strong>Metadata:</strong> title, author, version</li>
+                                    <li><strong>Scenes:</strong> Story sections with unique IDs</li>
+                                    <li><strong>Content:</strong> Text, variables, choices, conditionals</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="feature-item">
+                                <h4>State Management</h4>
+                                <ul>
+                                    <li><strong>Variables:</strong> Global state persistence</li>
+                                    <li><strong>Stats:</strong> Numeric tracking (health, gold, etc.)</li>
+                                    <li><strong>Inventory:</strong> Item collection system</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="feature-item">
+                                <h4>Logic & Control</h4>
+                                <ul>
+                                    <li><strong>Conditionals:</strong> if/else branching</li>
+                                    <li><strong>Macros:</strong> Reusable functions</li>
+                                    <li><strong>Expressions:</strong> Mathematical operations</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="feature-item">
+                                <h4>Advanced Features</h4>
+                                <ul>
+                                    <li><strong>Achievements:</strong> Unlockable goals</li>
+                                    <li><strong>Events:</strong> Trigger-based actions</li>
+                                    <li><strong>Tags:</strong> Metadata for choices and content</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-scroll"></i>
+                            <h3>Simple Syntax</h3>
+                            <p>Clean, easy-to-learn syntax designed for interactive fiction</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-sitemap"></i>
+                            <h3>Scene Blocks</h3>
+                            <p>Simple <code>scene id {</code> syntax for story scenes</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-database"></i>
+                            <h3>Variable System</h3>
+                            <p>Global variables with <code>set var = value</code> syntax</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-code-branch"></i>
+                            <h3>Conditional Logic</h3>
+                            <p><code>if condition {</code> blocks for branching</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-route"></i>
+                            <h3>Choice Navigation</h3>
+                            <p><code>choice "text" -> target</code> format</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-link"></i>
+                            <h3>Variable Interpolation</h3>
+                            <p><code>{variable_name}</code> in text</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="how-coslang-works">
+                    <h2><i class="fas fa-cogs"></i> How CosLang Works</h2>
+                    <p>Understanding the internal workings of CosLang helps you write better stories and debug issues effectively.</p>
+                    
+                    <div class="internal-architecture">
+                        <h3><i class="fas fa-microchip"></i> Internal Architecture</h3>
+                        
+                        <div class="ast-explanation">
+                            <h4>Abstract Syntax Tree (AST)</h4>
+                            <p>When you write Coslang code, it gets parsed into a structured representation called an Abstract Syntax Tree:</p>
+                            
+                            <div class="ast-diagram">
+                                <div class="ast-node root">
+                                    <span class="node-label">StoryAST</span>
+                                    <div class="node-children">
+                                        <div class="ast-node">
+                                            <span class="node-label">Meta</span>
+                                            <div class="node-props">
+                                                <span>title: "Story Title"</span>
+                                                <span>author: "Author Name"</span>
+                                                <span>version: "1.0.0"</span>
+                                            </div>
+                                        </div>
+                                        <div class="ast-node">
+                                            <span class="node-label">Scenes</span>
+                                            <div class="node-children">
+                                                <div class="ast-node">
+                                                    <span class="node-label">SceneNode</span>
+                                                    <div class="node-props">
+                                                        <span>id: "start"</span>
+                                                        <span>content: [TextNode, SetNode, ChoiceNode]</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="node-types">
+                                <h5>Node Types in the AST:</h5>
+                                <ul>
+                                    <li><strong>TextNode:</strong> Narrative content with optional variable interpolation</li>
+                                    <li><strong>SetNode:</strong> Variable assignments and expressions</li>
+                                    <li><strong>ChoiceNode:</strong> Player choices with targets and tags</li>
+                                    <li><strong>IfNode:</strong> Conditional blocks with then/else branches</li>
+                                    <li><strong>MacroNode:</strong> Function definitions and calls</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="execution-model">
+                            <h4>Execution Model</h4>
+                            <p>The Coslang engine follows a specific execution model:</p>
+                            
+                            <div class="execution-steps">
+                                <div class="exec-step">
+                                    <span class="step-number">1</span>
+                                    <div class="step-content">
+                                        <h5>Parse & Validate</h5>
+                                        <p>Coslang text → AST → Syntax validation</p>
+                                    </div>
+                                </div>
+                                <div class="exec-step">
+                                    <span class="step-number">2</span>
+                                    <div class="step-content">
+                                        <h5>Initialize Engine</h5>
+                                        <p>Create engine instance with AST and global state</p>
+                                    </div>
+                                </div>
+                                <div class="exec-step">
+                                    <span class="step-number">3</span>
+                                    <div class="step-content">
+                                        <h5>Load Scene</h5>
+                                        <p>Load scene content and initialize scene-level variables</p>
+                                    </div>
+                                </div>
+                                <div class="exec-step">
+                                    <span class="step-number">4</span>
+                                    <div class="step-content">
+                                        <h5>Execute Set Nodes</h5>
+                                        <p>Process all variable assignments in the scene</p>
+                                    </div>
+                                </div>
+                                <div class="exec-step">
+                                    <span class="step-number">5</span>
+                                    <div class="step-content">
+                                        <h5>Interpolate Text</h5>
+                                        <p>Replace {variable} placeholders with actual values</p>
+                                    </div>
+                                </div>
+                                <div class="exec-step">
+                                    <span class="step-number">6</span>
+                                    <div class="step-content">
+                                        <h5>Process Conditionals</h5>
+                                        <p>Evaluate if/else blocks and expand content</p>
+                                    </div>
+                                </div>
+                                <div class="exec-step">
+                                    <span class="step-number">7</span>
+                                    <div class="step-content">
+                                        <h5>Render Content</h5>
+                                        <p>Provide text and choices for UI display</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="state-management">
+                            <h4>State Management</h4>
+                            <p>The engine maintains several types of state:</p>
+                            
+                            <div class="state-types">
+                                <div class="state-type">
+                                    <h5>Global State</h5>
+                                    <ul>
+                                        <li><strong>Variables:</strong> User-defined variables (strings, numbers, booleans)</li>
+                                        <li><strong>Stats:</strong> Numeric values (health, gold, experience)</li>
+                                        <li><strong>Inventory:</strong> Item collections with quantities</li>
+                                        <li><strong>Events:</strong> Triggered events and their data</li>
+                                        <li><strong>Achievements:</strong> Unlocked achievements</li>
+                                        <li><strong>Macros:</strong> Function definitions</li>
+                                    </ul>
+                                </div>
+                                <div class="state-type">
+                                    <h5>Scene State</h5>
+                                    <ul>
+                                        <li><strong>Current Scene:</strong> Active scene ID and content</li>
+                                        <li><strong>Position:</strong> Current position in scene content</li>
+                                        <li><strong>Scene Variables:</strong> Scene-specific variable overrides</li>
+                                        <li><strong>Execution Flags:</strong> Track what's been processed</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="variable-interpolation">
+                            <h4>Variable Interpolation Process</h4>
+                            <p>When the engine encounters <code>{variable_name}</code> in text:</p>
+                            
+                            <div class="interpolation-steps">
+                                <ol>
+                                    <li>Search for variable in current scene variables</li>
+                                    <li>If not found, search in global variables</li>
+                                    <li>If not found, search in stats</li>
+                                    <li>If not found, search in inventory</li>
+                                    <li>Replace placeholder with actual value</li>
+                                    <li>If variable doesn't exist, keep placeholder as-is</li>
+                                </ol>
+                            </div>
+                            
+                            <div class="code-example">
+                                <h5>Interpolation Example</h5>
+                                <pre><code>set player_name = "Hero"
+set health = 100
+set gold = 50
+
+text: "Welcome, {player_name}! You have {health} health and {gold} gold."
+# Result: "Welcome, Hero! You have 100 health and 50 gold."</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="quickstart">
+                    <h2><i class="fas fa-rocket"></i> Quick Start Guide</h2>
+                    <p>Create your first CosLang story in minutes!</p>
+                    
+                    <div class="code-example">
+                        <h3>Basic Story Structure</h3>
+                        <pre><code>title: "My First Story"
+author: "Your Name"
+version: "1.0.0"
+
+scene start {
+    text: "Welcome to your story!"
+    
+    set player_name = "Hero"
+    set health = 100
+    
+    choice "Begin adventure" -> adventure
+}
+
+scene adventure {
+    text: "Hello, {player_name}! You have {health} health."
+    
+    if health > 50 {
+        text: "You're feeling strong!"
+        choice "Continue" -> next_scene
+    } else {
+        text: "You need to rest."
+        choice "Rest" -> rest_scene
+    }
+}</code></pre>
+                    </div>
+                    
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <h4>Create Story Metadata</h4>
+                            <p>Start with <code>title:</code>, <code>author:</code>, and <code>version:</code></p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <h4>Define Scenes</h4>
+                            <p>Use <code>scene name {</code> to create story scenes</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <h4>Add Content</h4>
+                            <p>Use <code>text:</code> for narrative and <code>choice "text" -> target</code> for player options</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <h4>Set Variables</h4>
+                            <p>Use <code>set variable = value</code> to track state</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">5</div>
+                            <h4>Add Logic</h4>
+                            <p>Use <code>if condition {</code> for branching story paths</p>
+                        </div>
+                    </div>
+                    
+                    <div class="note">
+                        <h4><i class="fas fa-lightbulb"></i> Getting Started Tips</h4>
+                        <ul>
+                            <li>Save your file with a <code>.coslang</code> extension</li>
+                            <li>Use the CosmosX Player to test your story</li>
+                            <li>Variables are global and persist across scenes</li>
+                            <li>Use <code>{variable_name}</code> to display variables in text</li>
+                            <li>Each choice must point to an existing scene</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="ide-architecture">
+                    <h2><i class="fas fa-desktop"></i> CosmosX IDE Architecture</h2>
+                    <p>The CosmosX IDE is a comprehensive development environment built specifically for creating Coslang stories.</p>
+                    
+                    <div class="ide-components">
+                        <h3><i class="fas fa-puzzle-piece"></i> IDE Components</h3>
+                        
+                        <div class="component-grid">
+                            <div class="component-card">
+                                <h4><i class="fas fa-edit"></i> Monaco Editor</h4>
+                                <p><strong>Core Editor:</strong> Professional code editor with Coslang support</p>
+                                <ul>
+                                    <li><strong>Syntax Highlighting:</strong> Color-coded Coslang syntax</li>
+                                    <li><strong>Autocomplete:</strong> Context-aware suggestions</li>
+                                    <li><strong>Error Detection:</strong> Real-time syntax validation</li>
+                                    <li><strong>Code Formatting:</strong> Automatic code beautification</li>
+                                    <li><strong>Keyboard Shortcuts:</strong> Ctrl+S, Ctrl+F, Ctrl+P, etc.</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="component-card">
+                                <h4><i class="fas fa-search"></i> Scene Management</h4>
+                                <p><strong>Story Organization:</strong> Tools for managing story structure</p>
+                                <ul>
+                                    <li><strong>Scene Parser:</strong> Automatically detects and lists scenes</li>
+                                    <li><strong>Scene Navigation:</strong> Click to jump to any scene</li>
+                                    <li><strong>Scene Search:</strong> Filter scenes by name or content</li>
+                                    <li><strong>Scene Operations:</strong> Duplicate, delete, validate scenes</li>
+                                    <li><strong>Scene Context Menu:</strong> Right-click for quick actions</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="component-card">
+                                <h4><i class="fas fa-bug"></i> Debug Tools</h4>
+                                <p><strong>Development Support:</strong> Comprehensive debugging features</p>
+                                <ul>
+                                    <li><strong>Variable Inspector:</strong> View all current variables</li>
+                                    <li><strong>Stats Panel:</strong> Monitor numeric game state</li>
+                                    <li><strong>Inventory Tracker:</strong> Track item collections</li>
+                                    <li><strong>Debug Log:</strong> Real-time execution logging</li>
+                                    <li><strong>Performance Monitor:</strong> FPS and memory tracking</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="component-card">
+                                <h4><i class="fas fa-trophy"></i> Advanced Features</h4>
+                                <p><strong>Enhanced Development:</strong> Professional authoring tools</p>
+                                <ul>
+                                    <li><strong>Achievement Manager:</strong> Define and track achievements</li>
+                                    <li><strong>Event System:</strong> Create trigger-based events</li>
+                                    <li><strong>Auto-save:</strong> Automatic story backup</li>
+                                    <li><strong>File Operations:</strong> Save, load, export .coslang files</li>
+                                    <li><strong>Drag & Drop:</strong> Easy file import</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ide-workflow">
+                        <h3><i class="fas fa-route"></i> IDE Workflow</h3>
+                        <p>The typical development workflow in the CosmosX IDE:</p>
+                        
+                        <div class="workflow-steps">
+                            <div class="workflow-step">
+                                <span class="step-number">1</span>
+                                <div class="step-content">
+                                    <h5>Create/Open Story</h5>
+                                    <p>Start with a new story or open an existing .coslang file</p>
+                                </div>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">2</span>
+                                <div class="step-content">
+                                    <h5>Write Content</h5>
+                                    <p>Use the Monaco editor with autocomplete and syntax highlighting</p>
+                                </div>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">3</span>
+                                <div class="step-content">
+                                    <h5>Validate & Debug</h5>
+                                    <p>Check for errors and use debug panels to inspect state</p>
+                                </div>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">4</span>
+                                <div class="step-content">
+                                    <h5>Test Story</h5>
+                                    <p>Use the built-in preview or export to test in the player</p>
+                                </div>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">5</span>
+                                <div class="step-content">
+                                    <h5>Iterate & Refine</h5>
+                                    <p>Make changes, test again, and refine your story</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ide-features">
+                        <h3><i class="fas fa-star"></i> Key IDE Features</h3>
+                        
+                        <div class="features-list">
+                            <div class="feature-category">
+                                <h4><i class="fas fa-keyboard"></i> Editor Features</h4>
+                                <ul>
+                                    <li><strong>Smart Autocomplete:</strong> Suggests scenes, variables, and syntax</li>
+                                    <li><strong>Syntax Validation:</strong> Real-time error detection and suggestions</li>
+                                    <li><strong>Code Formatting:</strong> Automatic indentation and spacing</li>
+                                    <li><strong>Comment Toggle:</strong> Quick comment/uncomment with Ctrl+/</li>
+                                    <li><strong>Multi-line Support:</strong> Handle complex text blocks</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="feature-category">
+                                <h4><i class="fas fa-tools"></i> Development Tools</h4>
+                                <ul>
+                                    <li><strong>Scene Explorer:</strong> Visual scene tree with descriptions</li>
+                                    <li><strong>Variable Inspector:</strong> Real-time variable state monitoring</li>
+                                    <li><strong>Error Panel:</strong> Detailed error reporting with line numbers</li>
+                                    <li><strong>Performance Monitor:</strong> Track editor and story performance</li>
+                                    <li><strong>Debug Console:</strong> Execution logging and debugging</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="feature-category">
+                                <h4><i class="fas fa-file-alt"></i> File Management</h4>
+                                <ul>
+                                    <li><strong>Auto-save:</strong> Automatic backup every 30 seconds</li>
+                                    <li><strong>Local Storage:</strong> Persistent story storage in browser</li>
+                                    <li><strong>Export Options:</strong> Save as .coslang file</li>
+                                    <li><strong>File Import:</strong> Drag & drop or file picker</li>
+                                    <li><strong>Version Control:</strong> Track changes and restore previous versions</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="feature-category">
+                                <h4><i class="fas fa-magic"></i> Advanced Features</h4>
+                                <ul>
+                                    <li><strong>Achievement System:</strong> Define and manage story achievements</li>
+                                    <li><strong>Event Management:</strong> Create trigger-based story events</li>
+                                    <li><strong>Macro Support:</strong> Define reusable functions</li>
+                                    <li><strong>Tag System:</strong> Add metadata to choices and content</li>
+                                    <li><strong>Story Analytics:</strong> Track story complexity and metrics</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="file-structure">
+                    <h2><i class="fas fa-folder-open"></i> File Structure</h2>
+                    <p>CosLang files use a simple, hierarchical structure:</p>
+                    
+                    <div class="structure-diagram">
+                        <div class="level-1">
+                            <div class="item">Story Metadata</div>
+                            <div class="arrow">↓</div>
+                            <div class="level-2">
+                                <div class="item">Scene 1</div>
+                                <div class="arrow">↓</div>
+                                <div class="level-3">
+                                    <div class="item">Text Content</div>
+                                    <div class="item">Variables</div>
+                                    <div class="item">Choices</div>
+                                    <div class="item">Conditionals</div>
+                                </div>
+                            </div>
+                            <div class="arrow">↓</div>
+                            <div class="level-2">
+                                <div class="item">Scene 2</div>
+                                <div class="arrow">↓</div>
+                                <div class="level-3">
+                                    <div class="item">Text Content</div>
+                                    <div class="item">Variables</div>
+                                    <div class="item">Choices</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3>File Organization</h3>
+                    <ul>
+                        <li><strong>Metadata:</strong> Story information at the top</li>
+                        <li><strong>Scenes:</strong> Individual story sections</li>
+                        <li><strong>Content:</strong> Text, variables, and choices within scenes</li>
+                        <li><strong>Logic:</strong> Conditional blocks for branching</li>
+                    </ul>
+                </section>
+
+                <section id="story-metadata">
+                    <h2><i class="fas fa-tags"></i> Story Metadata</h2>
+                    <p>Every CosLang story begins with metadata that describes the story:</p>
+                    
+                    <div class="code-example">
+                        <h3>Metadata Format</h3>
+                        <pre><code>title: "Story Title"
+author: "Author Name"
+version: "1.0.0"</code></pre>
+                    </div>
+                    
+                    <div class="metadata-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Description</th>
+                                    <th>Required</th>
+                                    <th>Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>title</code></td>
+                                    <td>The name of your story</td>
+                                    <td><span class="required">Yes</span></td>
+                                    <td><code>title: "The Lost Temple"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>author</code></td>
+                                    <td>Your name or pen name</td>
+                                    <td><span class="optional">No</span></td>
+                                    <td><code>author: "Jane Doe"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>version</code></td>
+                                    <td>Story version number</td>
+                                    <td><span class="optional">No</span></td>
+                                    <td><code>version: "1.0.0"</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="note">
+                        <h4><i class="fas fa-lightbulb"></i> Note</h4>
+                        <p>Metadata fields are case-insensitive and can be written with or without quotes around values.</p>
+                    </div>
+                </section>
+
+                <section id="scenes--choices">
+                    <h2><i class="fas fa-map"></i> Scenes & Choices</h2>
+                    <p>Scenes are the building blocks of your story. Each scene contains text, variables, and choices.</p>
+                    
+                    <div class="code-example">
+                        <h3>Scene Structure</h3>
+                        <pre><code>scene scene_id {
+    text: "Scene narrative text"
+    
+    set variable = value
+    
+    if condition {
+        text: "Conditional text"
+        choice "Choice text" -> target_scene
+    }
+    
+    choice "Choice text" -> target_scene
+    choice "Another choice" -> another_scene
+}</code></pre>
+                    </div>
+                    
+                    <h3>Choice Syntax</h3>
+                    <pre><code>choice "Choice text" -> target_scene</code></pre>
+                    
+                    <h3>Choice Examples</h3>
+                    <pre><code>choice "Enter the cave" -> cave_scene
+choice "Return to town" -> town
+choice "Fight the dragon" -> combat_scene
+choice "End the story" -> end</code></pre>
+                    
+                    <h3>Scene Navigation</h3>
+                    <ul>
+                        <li>Each choice must specify a target scene with <code>-> scene_name</code></li>
+                        <li>Target scenes must exist in the story</li>
+                        <li>You can have multiple choices per scene</li>
+                        <li>Choices can be conditional (inside if/else blocks)</li>
+                    </ul>
+                    
+                    <h3>Scene Content</h3>
+                    <ul>
+                        <li><b>text:</b> Narrative content (supports variable interpolation)</li>
+                        <li><b>set:</b> Variable assignments</li>
+                        <li><b>if/else:</b> Conditional blocks</li>
+                        <li><b>choice:</b> Player choices</li>
+                    </ul>
+                    
+                    <div class="note">
+                        <h4><i class="fas fa-lightbulb"></i> Best Practices</h4>
+                        <ul>
+                            <li>Use descriptive scene IDs (e.g., <code>town_square</code>, <code>cave_entrance</code>)</li>
+                            <li>Always include at least one choice in each scene</li>
+                            <li>Use variable interpolation to make text dynamic</li>
+                            <li>Test your story flow to ensure all scenes are reachable</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="variables--state">
+                    <h2><i class="fas fa-database"></i> Variables & State</h2>
+                    <p>Variables allow you to track player progress and create dynamic stories.</p>
+                    
+                    <div class="code-example">
+                        <h3>Variable Assignment</h3>
+                        <pre><code>set player_name = "Hero"
+set health = 100
+set gold = 50
+set has_key = false
+set visited_town = true</code></pre>
+                    </div>
+                    
+                    <h3>Variable Types</h3>
+                    <div class="variable-types">
+                        <div class="type-card">
+                            <h4>Strings</h4>
+                            <pre><code>set name = "John"
+set message = "Hello world"</code></pre>
+                        </div>
+                        <div class="type-card">
+                            <h4>Numbers</h4>
+                            <pre><code>set health = 100
+set gold = 50
+set score = 0</code></pre>
+                        </div>
+                        <div class="type-card">
+                            <h4>Booleans</h4>
+                            <pre><code>set has_key = true
+set visited_town = false</code></pre>
+                        </div>
+                        <div class="type-card">
+                            <h4>Expressions</h4>
+                            <pre><code>set gold = gold + 10
+set health = health - 5
+set score = score * 2</code></pre>
+                        </div>
+                    </div>
+                    
+                    <h3>Variable Interpolation</h3>
+                    <p>Display variable values in your text using <code>{variable_name}</code>:</p>
+                    <pre><code>text: "You have {gold} gold coins and {health} health points."
+text: "Welcome, {player_name}!"
+text: "Current Status: Health {health}, Gold {gold}, Has Key: {has_key}"</code></pre>
+                    
+                    <h3>Mathematical Operations</h3>
+                    <pre><code>set gold = gold + 10      # Add 10 to gold
+set health = health - 5   # Subtract 5 from health
+set score = score * 2     # Multiply score by 2
+set coins = coins / 2     # Divide coins by 2</code></pre>
+                    
+                    <div class="note">
+                        <h4><i class="fas fa-lightbulb"></i> Variable Scope</h4>
+                        <p>All variables are global and persist across scenes. Variables set in one scene are available in all subsequent scenes.</p>
+                    </div>
+                </section>
+
+                <section id="conditional-logic">
+                    <h2><i class="fas fa-code-branch"></i> Conditional Logic</h2>
+                    <p>Use conditional blocks to create branching story paths based on variables and player choices.</p>
+                    
+                    <div class="code-example">
+                        <h3>Basic Conditional Structure</h3>
+                        <pre><code>if condition {
+    text: "Conditional text"
+    choice "Choice text" -> target_scene
+} else {
+    text: "Alternative text"
+    choice "Alternative choice" -> other_scene
+}</code></pre>
+                    </div>
+                    
+                    <h3>Comparison Operators</h3>
+                    <div class="operators-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Operator</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>==</code></td>
+                                    <td>Equal</td>
+                                    <td><code>if has_key == true</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>!=</code></td>
+                                    <td>Not equal</td>
+                                    <td><code>if visited_town != true</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>></code></td>
+                                    <td>Greater than</td>
+                                    <td><code>if health > 50</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code><</code></td>
+                                    <td>Less than</td>
+                                    <td><code>if gold < 10</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>>=</code></td>
+                                    <td>Greater or equal</td>
+                                    <td><code>if level >= 5</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code><=</code></td>
+                                    <td>Less or equal</td>
+                                    <td><code>if coins <= 5</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h3>Logical Operators</h3>
+                    <pre><code>if gold >= 20 and health > 0 {
+    text: "You're healthy and wealthy!"
+}
+
+if has_key == true or has_sword == true {
+    text: "You have some useful equipment."
+}</code></pre>
+                    
+                    <h3>Nested Conditionals</h3>
+                    <pre><code>if gold >= 50 {
+    text: "You're very wealthy!"
+    if health >= 80 {
+        text: "And you're in great health too!"
+        choice "Show off" -> boast
+    } else {
+        text: "But you could use some healing."
+        choice "Buy potion" -> buy_potion
+    }
+} else {
+    text: "You need more gold."
+    choice "Work for money" -> work
+}</code></pre>
+                    
+                    <div class="note">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Important</h4>
+                        <p>Conditional blocks must be properly nested with matching braces <code>{}</code>. Each <code>if</code> block must have a corresponding closing brace.</p>
+                    </div>
+                </section>
+
+                <section id="macros">
+                    <h2><i class="fas fa-magic"></i> Macros</h2>
+                    <p>Macros let you define reusable logic blocks for common actions. Use macros to keep your stories DRY and organized.</p>
+                    <ul>
+                        <li>Define macros with arguments</li>
+                        <li>Call macros from choices, text, or other macros</li>
+                        <li>Macros can contain any valid CosLang code</li>
+                    </ul>
+                    <pre><code># Define a macro with arguments
+MACRO heal(target, amount) {
+    set {target}_health = {target}_health + {amount}
+    [LOG: "Healed {target} for {amount} points!"]
+}
+
+# Call a macro in a choice
+damage = random(1, 6)
+choice "Heal yourself" -> after_heal [heal(player, 10)]
+choice "Heal companion" -> after_heal [heal(companion, 5)]
+
+# Macros can be called in text or logic too
+text: "You use a healing spell!"
+[heal(player, 10)]
+</code></pre>
+                </section>
+
+                <section id="achievements">
+                    <h2><i class="fas fa-trophy"></i> Achievements</h2>
+                    <p>Achievements provide feedback and progression tracking for players. Define achievements and unlock them during gameplay.</p>
+                    <ul>
+                        <li>Define achievements with metadata</li>
+                        <li>Unlock achievements with tags</li>
+                        <li>Display achievements in the player</li>
+                        <li>Use achievements in conditional logic</li>
+                    </ul>
+                    <pre><code># Define achievements
+# Achievement: explorer
+# Name: Explorer
+# Description: Discovered the first location
+
+# Achievement: champion
+# Name: Champion
+# Description: Won a major battle
+
+# Unlock achievements in choices
+choice "Explore the cave" -> cave [ACHIEVEMENT: explorer]
+choice "Win the tournament" -> victory [ACHIEVEMENT: champion]
+
+# Check achievements in logic
+if explorer_unlocked == true {
+    text: "You are an explorer!"
+}
+</code></pre>
+                </section>
+
+                <section id="events">
+                    <h2><i class="fas fa-calendar-alt"></i> Events</h2>
+                    <p>Events allow for dynamic, reactive storytelling with triggers and listeners. Use events for custom logic, timers, and more.</p>
+                    <ul>
+                        <li>Register event listeners</li>
+                        <li>Trigger events during gameplay</li>
+                        <li>Timers and delays</li>
+                        <li>Event-driven story progression</li>
+                    </ul>
+                    <pre><code># Register event listeners
+[onEvent 'player_hurt' [set health = health - 1]]
+[onEvent 'item_found' [LOG: "You found something!"]]
+
+# Trigger events
+[triggerEvent 'player_hurt']
+[triggerEvent 'item_found' {item: 'sword'}]
+
+# Timers and delays (advanced)
+#setTimer 'timeout' 5000 "Time's up!"
+</code></pre>
+                </section>
+
+                <section id="dice">
+                    <h2><i class="fas fa-dice"></i> Dice & Random</h2>
+                    <p>Dice and random functions add unpredictability and excitement to your stories. Use them for skill checks, random events, and more.</p>
+                    <ul>
+                        <li>Standard dice notation (d20, 2d6+1, etc.)</li>
+                        <li>Random number generation</li>
+                        <li>Random chance (percent)</li>
+                        <li>Dice result storage in variables and log</li>
+                    </ul>
+                    <pre><code># Roll dice in a choice
+difficulty = random(1, 10)
+[ROLL d20]
+[ROLL 2d6+1]
+[ROLL 1d100]
+
+# Use random() and randomChance() in conditions
+if randomChance(50) {
+    text: "You succeed!"
+    [LOG: "Success!"]
+} else {
+    text: "You fail."
+    [LOG: "Failure."]
+}
+
+set roll_result = random(1, 6)
+[LOG: "You rolled a {roll_result} on a d6"]
+</code></pre>
+                </section>
+
+                <section id="story-log">
+                    <h2><i class="fas fa-list-alt"></i> Story Log</h2>
+                    <p>The story log records important events, player actions, and outcomes. Use it to provide feedback, track progress, or create a journal for the player.</p>
+                    <ul>
+                        <li>Add log entries with <code>[LOG: "message"]</code></li>
+                        <li>Log entries appear in the player log panel</li>
+                        <li>Use variables in log messages: <code>{variable_name}</code></li>
+                    </ul>
+                    <pre><code># Add a log entry when a choice is made
+choice "Open the chest" -> treasure [LOG: "Player opened the chest"]
+
+# Log with variable interpolation
+set gold = 100
+[LOG: "You now have {gold} gold coins!"]
+
+# Log dice results automatically
+[ROLL d20]
+# (Result will be logged automatically)
+</code></pre>
+                </section>
+
+                <section id="full-example">
+                    <h2><i class="fas fa-file-code"></i> Full Example</h2>
+                    <p class="example-title">A complete, fully commented Coslang story:</p>
+                    <pre><code># --- Metadata ---
+title: "The Lost Artifact"
+author: "Jane Doe"
+version: "1.0"
+
+# --- Assets Block ---
+assets {
+  image logo = "logo.png"
+  audio introMusic = "intro.mp3"
+}
+
+# --- Start Scene ---
+scene start {
+  # Scene-level variables
+  vars {
+    playerHealth = 10
+    artifactFound = false
+  }
+
+  # Show the logo and play intro music
+  show image logo
+  play audio introMusic
+
+  # Main intro text with variable interpolation
+  text: "Welcome, adventurer! Your health is {playerHealth}."
+
+  # Present choices to the player
+  choice "Search the ruins" -> ruins
+  choice "Return to camp" -> camp
+}
+
+# --- Ruins Scene ---
+scene ruins {
+  text: "You enter the ancient ruins. It's dark and cold."
+
+  # Use an if block to branch based on artifactFound
+  if artifactFound == false {
+    text: "You spot a mysterious artifact on a pedestal."
+    set artifactFound = true
+    text: "You carefully take the artifact. [ACHIEVEMENT:Found Artifact]"
+    # Tag will log achievement
+  } else {
+    text: "The pedestal is empty. You've already taken the artifact."
+  }
+
+  # Health check with macro usage
+  set playerHealth = min(playerHealth, 10) # Clamp health to max 10
+
+  # Choices
+  choice "Leave the ruins" -> camp
+}
+
+# --- Camp Scene ---
+scene camp {
+  text: "You return to camp, tired but safe."
+
+  # If the artifact was found, show a special message
+  if artifactFound == true {
+    text: "You show the artifact to your companions. They cheer!"
+  } else {
+    text: "You rest by the fire, wondering what you missed in the ruins."
+  }
+
+  # End of demo
+  text: "THE END"
+}
+
+# --- Macro Example ---
+macro min(a, b) {
+  # Returns the minimum of two values
+  set result = (a < b) ? a : b
+  text: "Minimum value is {result}"
+}
+</code></pre>
+                    <div class="note">
+                        <b>Tip:</b> Use <span class="syntax-highlight">#</span> for comments in Coslang. Comments are ignored by the engine and help document your code.
+                    </div>
+                </section>
+
+                <section id="syntax-rules">
+                    <h2><i class="fas fa-ruler"></i> Syntax Rules</h2>
+                    <p>Follow these rules to ensure your CosLang code works correctly:</p>
+                    
+                    <div class="rules-grid">
+                        <div class="rule-card">
+                            <h4>Scene Names</h4>
+                            <ul>
+                                <li>Use only letters, numbers, and underscores</li>
+                                <li>Must start with a letter or underscore</li>
+                                <li>Case-sensitive</li>
+                                <li>Must be unique within the story</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="rule-card">
+                            <h4>Variable Names</h4>
+                            <ul>
+                                <li>Use only letters, numbers, and underscores</li>
+                                <li>Must start with a letter or underscore</li>
+                                <li>Case-sensitive</li>
+                                <li>Use descriptive names</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="rule-card">
+                            <h4>Strings</h4>
+                            <ul>
+                                <li>Use double quotes: <code>"text"</code></li>
+                                <li>Escape quotes with backslash: <code>"He said \"Hello\""</code></li>
+                                <li>Support variable interpolation: <code>"You have {gold} gold"</code></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="rule-card">
+                            <h4>Comments</h4>
+                            <ul>
+                                <li>Use <code>#</code> for single-line comments</li>
+                                <li>Comments are ignored by the parser</li>
+                                <li>Use comments to document your code</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="rule-card">
+                            <h4>Braces</h4>
+                            <ul>
+                                <li>Scene blocks must be enclosed in <code>{}</code></li>
+                                <li>Conditional blocks must be enclosed in <code>{}</code></li>
+                                <li>Ensure all braces are properly matched</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="rule-card">
+                            <h4>Whitespace</h4>
+                            <ul>
+                                <li>Indentation is optional but recommended</li>
+                                <li>Use consistent indentation (spaces or tabs)</li>
+                                <li>Empty lines are ignored</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="note warning">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Known Issue: Indentation and Whitespace</h4>
+                        <ul>
+                            <li><b>Leading tabs or mixed whitespace before statements like <code>if</code>, <code>set</code>, <code>choice</code>, etc. may cause parsing errors.</b></li>
+                            <li>For best results, use only spaces for indentation, or write these statements at the start of the line with no indentation.</li>
+                            <li>If you encounter an error such as <code>Unsafe or invalid if condition</code>, check for tabs or mixed whitespace before your statement.</li>
+                            <li>This is a known limitation and will be addressed in a future update.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="note">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Common Mistakes</h4>
+                        <ul>
+                            <li>Missing closing braces <code>}</code></li>
+                            <li>Unmatched quotes in strings</li>
+                            <li>Invalid scene references in choices</li>
+                            <li>Undefined variables in interpolation</li>
+                            <li>Missing <code>text:</code> in scenes</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="faq">
+                    <h2><i class="fas fa-question-circle"></i> FAQ</h2>
+                    
+                    <div class="faq-item">
+                        <h3>How do I create a variable?</h3>
+                        <p>Use <code>set variable_name = value</code> in any scene. Variables are global and persist across scenes.</p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <h3>How do I display variables in text?</h3>
+                        <p>Use <code>{variable_name}</code> in your text blocks. For example: <code>text: "You have {gold} gold."</code></p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <h3>How do I create conditional choices?</h3>
+                        <p>Put choices inside <code>if condition {</code> blocks. The choices will only appear if the condition is true.</p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <h3>How do I modify variables?</h3>
+                        <p>Use <code>set var = var + 10</code> or <code>set var = var - 5</code> for mathematical operations.</p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <h3>What comparison operators can I use?</h3>
+                        <p><code>==</code>, <code>!=</code>, <code>></code>, <code><</code>, <code>>=</code>, <code><=</code></p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <h3>Can I use logical operators?</h3>
+                        <p>Yes, use <code>and</code> and <code>or</code> in conditions.</p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <h3>What happens if a variable is undefined?</h3>
+                        <p>It is treated as 0 or false.</p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <h3>How do I create multiple choices?</h3>
+                        <p>Just add multiple <code>choice "text" -> target</code> lines.</p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <h3>Can I nest conditional blocks?</h3>
+                        <p>Yes, you can put if/else blocks inside other if/else blocks.</p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <h3>How do I end a story?</h3>
+                        <p>Create a scene with <code>choice "End" -> end</code> and define an <code>end</code> scene.</p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <h3>How do I test my story?</h3>
+                        <p>Use the CosmosX Player to load and test your .coslang files. The player will show you exactly how your story will appear to readers.</p>
+                    </div>
+                </section>
+
+                <section id="whats-new">
+                    <h2><i class="fas fa-star"></i> What's New</h2>
+                    <p>CosLang v1.0 features a clean, intuitive syntax designed for interactive storytelling:</p>
+                    
+                    <div class="new-features">
+                        <div class="feature">
+                            <h3>🎯 Simple Scene Syntax</h3>
+                            <p>Clean <code>scene name {}</code> format for easy story organization.</p>
+                        </div>
+                        
+                        <div class="feature">
+                            <h3>🔧 Direct Variable Assignment</h3>
+                            <p>Use <code>set variable = value</code> for straightforward state management.</p>
+                        </div>
+                        
+                        <div class="feature">
+                            <h3>📝 Clean Text Blocks</h3>
+                            <p>Simple <code>text: "content"</code> format for narrative text.</p>
+                        </div>
+                        
+                        <div class="feature">
+                            <h3>🎮 Intuitive Choices</h3>
+                            <p><code>choice "text" -> target</code> format for clear player options.</p>
+                        </div>
+                        
+                        <div class="feature">
+                            <h3>🔀 Built-in Conditionals</h3>
+                            <p>Native <code>if/else</code> blocks for branching logic.</p>
+                        </div>
+                        
+                        <div class="feature">
+                            <h3>🔗 Variable Interpolation</h3>
+                            <p>Use <code>{variable_name}</code> directly in text for dynamic content.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="upcoming">
+                        <h3>Coming Soon</h3>
+                        <p>Future versions will include advanced features like macros, achievements, events, dice mechanics, and story logging.</p>
+                        
+                        <div class="upcoming-features">
+                            <div class="upcoming-feature">
+                                <h4>🎲 Dice & Random</h4>
+                                <p>Add randomness to your stories with dice rolls and random events.</p>
+                            </div>
+                            <div class="upcoming-feature">
+                                <h4>🏆 Achievements</h4>
+                                <p>Reward players for completing story milestones.</p>
+                            </div>
+                            <div class="upcoming-feature">
+                                <h4>📋 Story Log</h4>
+                                <p>Keep track of player progress and story history.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="learn-assets/learn.js"></script>
+</body>
+</html> 

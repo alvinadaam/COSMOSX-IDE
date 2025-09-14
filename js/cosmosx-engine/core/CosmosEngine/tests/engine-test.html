@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CosmosEngine Test Suite</title>
+</head>
+<body>
+  <h1>CosmosEngine Test Suite</h1>
+  <p>Open the browser console to see test results.</p>
+  <script type="module">
+    import * as Parser from '../parser.js';
+    window.CosmosParser = {
+      parseSet: Parser.parseSet,
+      parseText: Parser.parseText
+    };
+    import '../engine.js';
+    import './engine.test.js';
+    // The test file auto-runs and logs to the console.
+    document.body.insertAdjacentHTML('beforeend', '<p style="color:green">Engine tests loaded. Check the console for results.</p>');
+  </script>
+</body>
+</html> 

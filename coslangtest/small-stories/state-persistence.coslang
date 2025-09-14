@@ -1,0 +1,279 @@
+title: "State Persistence & Memory Test"
+author: "Smart Test Suite"
+version: "1.0.0"
+
+vars {
+    session_id = 1
+    total_visits = 0
+    last_choice = "none"
+    persistent_score = 0
+    memory_test_passed = false
+    
+    # Complex state tracking
+    visited_locations = 0
+    discovered_secrets = 0
+    relationship_status = "neutral"
+    character_development = 0
+}
+
+stats {
+    experience_points = 0
+    skill_progression = 0
+    mastery_level = 0
+}
+
+inventory {
+    memory_crystal = 1
+    state_recorder = 1
+    persistence_gem = 0
+}
+
+scene start {
+    text: "🧠 STATE PERSISTENCE & MEMORY TEST"
+    text: "Testing how well the engine maintains state across scenes and choices."
+    
+    set total_visits = total_visits + 1
+    set session_id = session_id + 1
+    
+    text: "Session #{session_id}, Total visits: {total_visits}"
+    text: "Last choice made: {last_choice}"
+    text: "Persistent score: {persistent_score}"
+    
+    # Memory test with complex state tracking
+    macro update_memory_state(location, action) {
+        set visited_locations = visited_locations + 1
+        set experience_points = experience_points + 10
+        text: "Memory updated: Visited {location}, performed {action}"
+        text: "Total locations visited: {visited_locations}"
+        return visited_locations
+    }
+    
+    text: "Choose an action to test state persistence:"
+    
+    choice "Explore the Memory Palace" -> memory_palace
+    choice "Test Relationship Tracking" -> relationship_test
+    choice "Challenge State Complexity" -> complexity_test
+    choice "Verify Previous Choices" -> choice_verification
+}
+
+scene memory_palace {
+    set last_choice = "memory_palace"
+    set location_count = update_memory_state("Memory Palace", "exploration")
+    
+    text: "🏛️ MEMORY PALACE EXPLORATION"
+    text: "You enter a vast palace where memories are stored as crystalline structures."
+    
+    if memory_crystal > 0 {
+        text: "Your memory crystal resonates with the palace energy."
+        set memory_crystal = memory_crystal - 1
+        set discovered_secrets = discovered_secrets + 3
+        set persistence_gem = persistence_gem + 1
+        
+        text: "Secrets discovered: {discovered_secrets}"
+        text: "You've gained a persistence gem!"
+        
+        # Complex nested state changes
+        if discovered_secrets >= 3 {
+            set memory_test_passed = true
+            set character_development = character_development + 2
+            text: "Memory test passed! Character development increased."
+            
+            choice "Access deeper memories" -> deep_memory
+            choice "Record current state" -> state_recording
+        } else {
+            choice "Continue exploring" -> memory_palace
+        }
+    } else {
+        text: "You need a memory crystal to fully explore this area."
+        choice "Search for memory crystals" -> crystal_hunt
+    }
+    
+    choice "Return with new knowledge" -> start
+}
+
+scene relationship_test {
+    set last_choice = "relationship_test"
+    
+    text: "💝 RELATIONSHIP TRACKING TEST"
+    text: "Testing how relationships persist and evolve across interactions."
+    text: "Current relationship status: {relationship_status}"
+    
+    # Dynamic relationship system
+    if relationship_status == "neutral" {
+        text: "You meet a mysterious figure who seems to know you."
+        choice "Approach with kindness" -> kind_approach
+        choice "Remain cautious" -> cautious_approach
+        choice "Act aggressively" -> aggressive_approach
+    } else if relationship_status == "friendly" {
+        text: "Your friend greets you warmly, remembering your past kindness."
+        set persistent_score = persistent_score + 20
+        text: "Friendship bonus! Score +20"
+        choice "Deepen the friendship" -> deep_friendship
+        choice "Ask for assistance" -> request_help
+    } else if relationship_status == "hostile" {
+        text: "The figure glares at you, still angry from your previous encounter."
+        text: "Your past aggressive actions have consequences."
+        choice "Attempt reconciliation" -> reconciliation
+        choice "Stand your ground" -> confrontation
+    } else if relationship_status == "romantic" {
+        text: "Your beloved approaches with a gentle smile."
+        set persistent_score = persistent_score + 30
+        text: "Love bonus! Score +30"
+        choice "Share intimate moment" -> intimate_scene
+    }
+    
+    choice "Return and reflect" -> start
+}
+
+scene complexity_test {
+    set last_choice = "complexity_test"
+    
+    text: "🧩 STATE COMPLEXITY CHALLENGE"
+    text: "Testing engine limits with complex interconnected state changes."
+    
+    # Macro with complex state manipulation
+    macro complex_state_change(multiplier, bonus) {
+        set experience_points = (experience_points + bonus) * multiplier
+        set skill_progression = skill_progression + (multiplier * 2)
+        set mastery_level = experience_points / 100
+        set character_development = character_development + 1
+        
+        # Cascading effects
+        if mastery_level >= 5 {
+            set relationship_status = "respected"
+            set persistent_score = persistent_score + 50
+        }
+        
+        text: "Complex calculation complete:"
+        text: "Experience: {experience_points}, Skill: {skill_progression}"
+        text: "Mastery Level: {mastery_level}, Development: {character_development}"
+        
+        return mastery_level
+    }
+    
+    set new_mastery = complex_state_change(3, 25)
+    
+    # Multiple simultaneous state checks
+    if new_mastery >= 5 and character_development >= 3 and persistent_score >= 100 {
+        text: "🏆 MASTER STATUS ACHIEVED!"
+        text: "All complex state requirements met simultaneously."
+        choice "Claim master rewards" -> master_rewards
+    } else if new_mastery >= 3 {
+        text: "⭐ Advanced status reached."
+        choice "Continue progression" -> advanced_progression
+    } else {
+        text: "📈 Basic progression maintained."
+        choice "Focus on improvement" -> skill_training
+    }
+    
+    choice "Return with complex state" -> start
+}
+
+scene choice_verification {
+    set last_choice = "choice_verification"
+    
+    text: "✅ CHOICE VERIFICATION & HISTORY"
+    text: "Verifying that previous choices are remembered and have lasting impact."
+    
+    text: "Choice History Analysis:"
+    text: "- Total visits to start: {total_visits}"
+    text: "- Locations visited: {visited_locations}"
+    text: "- Secrets discovered: {discovered_secrets}"
+    text: "- Character development: {character_development}"
+    text: "- Relationship status: {relationship_status}"
+    text: "- Memory test passed: {memory_test_passed}"
+    
+    # Conditional content based on accumulated choices
+    if visited_locations >= 2 {
+        text: "🗺️ Explorer: You've visited multiple locations."
+    }
+    
+    if discovered_secrets >= 3 {
+        text: "🔍 Secret Keeper: You've uncovered hidden knowledge."
+    }
+    
+    if character_development >= 3 {
+        text: "📈 Evolved: Your character has grown significantly."
+    }
+    
+    if memory_test_passed {
+        text: "🧠 Memory Master: You've proven your cognitive abilities."
+    }
+    
+    # Dynamic choices based on state
+    if persistent_score >= 100 {
+        choice "Access high-score content" -> elite_content
+    }
+    
+    if relationship_status == "friendly" or relationship_status == "romantic" {
+        choice "Leverage positive relationships" -> social_benefits
+    }
+    
+    choice "Reset and start fresh" -> reset_test
+    choice "Continue with current state" -> start
+}
+
+# Advanced relationship scenes
+scene kind_approach {
+    set relationship_status = "friendly"
+    text: "Your kindness is appreciated. A friendship begins to form."
+    choice "Continue" -> start
+}
+
+scene cautious_approach {
+    set relationship_status = "neutral"
+    text: "Your caution maintains the status quo."
+    choice "Continue" -> start
+}
+
+scene aggressive_approach {
+    set relationship_status = "hostile"
+    text: "Your aggression creates lasting enmity."
+    choice "Continue" -> start
+}
+
+scene deep_friendship {
+    set relationship_status = "romantic"
+    set character_development = character_development + 2
+    text: "Your friendship deepens into something more meaningful."
+    choice "Continue" -> start
+}
+
+scene master_rewards {
+    text: "🎖️ MASTER REWARDS CLAIMED"
+    set persistent_score = persistent_score + 100
+    set mastery_level = mastery_level + 2
+    text: "Ultimate rewards granted for achieving master status!"
+    choice "Continue as a master" -> start
+}
+
+scene reset_test {
+    text: "🔄 RESETTING STATE FOR FRESH TEST"
+    
+    # Reset all variables to initial state
+    set total_visits = 0
+    set last_choice = "none"
+    set persistent_score = 0
+    set memory_test_passed = false
+    set visited_locations = 0
+    set discovered_secrets = 0
+    set relationship_status = "neutral"
+    set character_development = 0
+    set experience_points = 0
+    set skill_progression = 0
+    set mastery_level = 0
+    
+    text: "All state variables reset to initial values."
+    choice "Begin fresh test" -> start
+}
+
+scene end {
+    text: "🏁 STATE PERSISTENCE TEST COMPLETED"
+    text: "Final state summary:"
+    text: "- Sessions: {session_id}"
+    text: "- Total visits: {total_visits}"
+    text: "- Persistent score: {persistent_score}"
+    text: "- Relationship: {relationship_status}"
+    text: "- Development level: {character_development}"
+    text: "- Mastery achieved: {mastery_level}"
+}

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learn CosmosX IDE & Engine</title>
+      <link rel="icon" type="image/svg+xml" href="../../assets/logos/favicon.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="learn-assets/learn.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+              <img src="../../assets/logos/cosmosx-logo.svg" alt="COSMOSX IDE" class="logo">
+              <h1>Learn CosmosX IDE & Engine</h1>
+      <p class="subtitle">The complete interactive fiction development environment</p>
+    </div>
+
+    <div class="feature-card">
+              <h2><i class="fas fa-rocket"></i> CosmosX IDE: Modular Engine & Enhanced Features</h2>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h4><i class="fas fa-cogs"></i> Modular Engine</h4>
+          <p>Complete refactor with dedicated managers for macros, achievements, logging, events, and dice</p>
+        </div>
+        <div class="feature-item">
+          <h4><i class="fas fa-magic"></i> Enhanced Coslang</h4>
+          <p>Full macro system, achievement definitions, event system, and advanced dice notation</p>
+        </div>
+        <div class="feature-item">
+          <h4><i class="fas fa-code"></i> Unified State API</h4>
+          <p>Clean, consistent API for all state operations across IDE, player, and previewer</p>
+        </div>
+        <div class="feature-item">
+          <h4><i class="fas fa-shield-alt"></i> Robust Error Handling</h4>
+          <p>Graceful fallbacks and comprehensive error reporting for better development experience</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <h3><i class="fas fa-star"></i> Key Features</h3>
+      <ul>
+        <li><strong>Monaco Editor</strong> with syntax highlighting and context-aware autocomplete</li>
+        <li><strong>Scene Management</strong> with navigation and search capabilities</li>
+        <li><strong>Live Error Panel</strong> with click-to-navigate functionality</li>
+        <li><strong>Debug Panel</strong> monitoring variables, stats, inventory, and story log</li>
+        <li><strong>Asset Management</strong> for images and audio files</li>
+        <li><strong>Live Preview</strong> with instant reset and replay</li>
+        <li><strong>Modular Engine</strong> with dedicated managers for all features</li>
+      </ul>
+    </div>
+
+    <div class="panel-list">
+      <div class="panel">
+        <h3><i class="fas fa-edit"></i> Editor</h3>
+        <ul>
+          <li>Write Coslang code with syntax highlighting</li>
+          <li>Context-aware auto-completion</li>
+          <li>Real-time error detection</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3><i class="fas fa-sitemap"></i> Scenes</h3>
+        <ul>
+          <li>Browse and jump to scenes</li>
+          <li>Search and filter functionality</li>
+          <li>Scene dependency tracking</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3><i class="fas fa-exclamation-triangle"></i> Errors & Warnings</h3>
+        <ul>
+          <li>See syntax and logic errors live</li>
+          <li>Click to jump to error lines</li>
+          <li>Detailed error descriptions</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3><i class="fas fa-bug"></i> Debug</h3>
+        <ul>
+          <li>Monitor variables, stats, inventory</li>
+          <li>View story log and achievements</li>
+          <li>Real-time state updates</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3><i class="fas fa-images"></i> Assets</h3>
+        <ul>
+          <li>Manage images and audio files</li>
+          <li>Insert assets into your story</li>
+          <li>Asset preview and validation</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3><i class="fas fa-play"></i> Preview</h3>
+        <ul>
+          <li>Test your story live</li>
+          <li>Reset and replay instantly</li>
+          <li>Full engine integration</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="task">
+      <h3><i class="fas fa-tasks"></i> Get Started</h3>
+      <p><strong>Try the IDE now!</strong></p>
+      <ul>
+        <li>Open the CosmosX IDE using the button below</li>
+        <li>Paste the sample Coslang story and run it</li>
+        <li>Switch between panels and see live updates</li>
+                    <li>Explore the enhanced features</li>
+      </ul>
+      <button class="btn-demo" onclick="openIDE()">
+        <i class="fas fa-external-link-alt"></i> Open CosmosX IDE
+      </button>
+      <div class="demo-preview" id="demoPreview"></div>
+    </div>
+
+    <div class="feature">
+      <h3><i class="fas fa-lightbulb"></i> Pro Tips</h3>
+      <ul>
+        <li>Use <strong>Ctrl+S</strong> to save, <strong>Ctrl+N</strong> for new story</li>
+        <li>Press <strong>F5</strong> to refresh the preview</li>
+        <li>Click errors to jump directly to the line in the editor</li>
+        <li>Use the debug panel to monitor your story's state</li>
+        <li>Try the new macro system and achievement features</li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      <p>CosmosX IDE &middot; Engine Interactive Guide &copy; 2024</p>
+      <div class="footer-links">
+        <a href="../COSLANG/learn.html" class="footer-link">
+          <i class="fas fa-book"></i> Coslang Language Reference
+        </a>
+        <a href="../COSLANG/README.md" class="footer-link">
+          <i class="fas fa-file-alt"></i> Engine Documentation
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="learn-assets/learn.js"></script>
+</body>
+</html> 

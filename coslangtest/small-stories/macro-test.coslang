@@ -1,0 +1,55 @@
+title: "Macro System Test"
+author: "Test Suite"
+version: "1.0.0"
+
+vars {
+    health = 80
+    max_health = 100
+    damage_dealt = 0
+    enemy_health = 30
+}
+
+scene start {
+    text: "Testing macro system..."
+    text: "Player health: {health}/{max_health}"
+    text: "Enemy health: {enemy_health}"
+    
+    macro heal(amount) {
+        set health = health + amount
+        if health > max_health {
+            set health = max_health
+        }
+        text: "Healed for {amount}! Health: {health}/{max_health}"
+        return health
+    }
+    
+    macro attack(damage) {
+        set enemy_health = enemy_health - damage
+        set damage_dealt = damage_dealt + damage
+        text: "Dealt {damage} damage! Enemy health: {enemy_health}"
+        if enemy_health <= 0 {
+            text: "Enemy defeated!"
+            return "victory"
+        }
+        return "continue"
+    }
+    
+    text: "Using heal macro..."
+    set new_health = heal(15)
+    
+    text: "Using attack macro..."
+    set battle_result = attack(20)
+    
+    if battle_result == "victory" {
+        text: "✅ Battle won! Total damage: {damage_dealt}"
+    } else {
+        text: "⚔️ Battle continues..."
+    }
+    
+    choice "Test complete" -> end
+}
+
+scene end {
+    text: "Macro test completed!"
+    text: "Final health: {health}, Damage dealt: {damage_dealt}"
+}

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CosmosX Player Engine</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/logos/favicon.svg">
+      <link rel="icon" type="image/svg+xml" href="../assets/logos/favicon.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/utilities.css">
+</head>
+<body>
+  <!-- App Header -->
+  <header class="app-header" role="banner">
+    <div class="container header-content">
+      <a href="#" class="logo" aria-label="CosmosX Player Home">
+        <img src="../assets/logos/player-logo.svg" alt="COSMOSX Player" class="logo-svg" width="120" height="30" />
+        <span class="version-badge">v2.9.1</span>
+      </a>
+      <nav aria-label="Main actions">
+        <div class="flex gap-sm" id="nav-actions">
+          <button class="btn-icon" id="load-file-btn" aria-label="Load Story" title="Load Story File">
+            <i class="fas fa-folder-open"></i>
+          </button>
+          <button class="btn-icon" id="save-btn" aria-label="Save Game" title="Save Game" style="display: none;">
+            <i class="fas fa-save"></i>
+          </button>
+          <button class="btn-icon" id="load-btn" aria-label="Load Game" title="Load Saved Game" style="display: none;">
+            <i class="fas fa-download"></i>
+          </button>
+          <button class="btn-icon" id="docs-btn" aria-label="Documentation" title="Documentation">
+            <i class="fas fa-book"></i>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="app-main" id="main-content" tabindex="-1">
+    <div class="container story-container">
+      <!-- Background Elements -->
+      <div class="bg-elements">
+        <div class="bg-element bg-element-1"></div>
+        <div class="bg-element bg-element-2"></div>
+      </div>
+      
+      <!-- Welcome Screen (Default) -->
+      <div id="welcome-screen" class="welcome-screen fade-in">
+        <div class="welcome-content">
+          <div class="welcome-logo">
+            <img src="../assets/logos/player-logo.svg" alt="COSMOSX Player" class="welcome-logo-img">
+          </div>
+          
+          <h1 class="welcome-title">Welcome to CosmosX Player</h1>
+          <p class="welcome-subtitle">Your gateway to interactive fiction adventures</p>
+          
+          <div class="welcome-description">
+            <p>Experience immersive stories crafted with the CosLang scripting language. 
+            Load a .coslang file to begin your journey into interactive fiction.</p>
+          </div>
+          
+          <div class="welcome-actions">
+            <button class="btn btn-primary welcome-btn" id="welcome-load-btn">
+              <i class="fas fa-folder-open"></i>
+              Load a Story
+            </button>
+            <button class="btn btn-secondary welcome-btn" id="welcome-demo-btn">
+              <i class="fas fa-play"></i>
+              Try Demo Story
+            </button>
+          </div>
+          
+          <div class="welcome-links">
+            <div class="welcome-link-group">
+              <h3>Learn & Create</h3>
+              <div class="welcome-link-buttons">
+                <a href="../index.html" class="welcome-link-btn">
+                  <i class="fas fa-code"></i>
+                  CosmosX IDE
+                </a>
+                <a href="../docs/COSLANG/learn.html" class="welcome-link-btn">
+                  <i class="fas fa-book"></i>
+                  CosLang Guide
+                </a>
+              </div>
+            </div>
+            
+            <div class="welcome-link-group">
+              <h3>Documentation</h3>
+              <div class="welcome-link-buttons">
+                <a href="../docs/COSMOSX/learn.html" class="welcome-link-btn">
+                  <i class="fas fa-graduation-cap"></i>
+                  Learn CosmosX
+                </a>
+                <a href="../status.md" class="welcome-link-btn">
+                  <i class="fas fa-info-circle"></i>
+                  Project Status
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Story Content (Hidden by default) -->
+      <div id="story-content" class="story-content-container" style="display: none;">
+        <div id="story-root" class="story-content fade-in">
+          <!-- Dynamic content will be rendered here by CosmosUI -->
+        </div>
+        
+        <div id="choices-root" class="choices-container">
+          <!-- Dynamic choices will be rendered here by CosmosUI -->
+        </div>
+        
+        <div id="stats-root" class="stats-panel fade-in">
+          <!-- Dynamic stats will be rendered here by CosmosUI -->
+        </div>
+        
+        <div id="inventory-root" class="inventory-panel fade-in">
+          <!-- Dynamic inventory will be rendered here by CosmosUI -->
+        </div>
+        
+        <div id="achievements-root" class="achievements-panel fade-in"></div>
+        
+        <div id="events-root" class="events-panel fade-in">
+          <!-- Dynamic events will be rendered here by CosmosUI -->
+        </div>
+        
+        <div id="log-root" class="log-panel fade-in">
+          <!-- Dynamic story log will be rendered here by CosmosUI -->
+        </div>
+        
+        <div id="dice-root" class="dice-panel fade-in">
+          <!-- Dynamic dice rolls will be rendered here by CosmosUI -->
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- App Footer -->
+  <footer class="app-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-content">
+        <div class="copyright text-sm text-secondary">
+          © 2024 CosmosX Player Engine • Interactive Fiction Platform
+        </div>
+        
+        <div class="footer-nav">
+          <a href="../index.html" class="footer-link">
+            <i class="fas fa-home"></i> IDE
+          </a>
+          <a href="../docs/COSMOSX/learn.html" class="footer-link">
+            <i class="fas fa-book"></i> Documentation
+          </a>
+          <a href="../docs/COSLANG/learn.html" class="footer-link">
+            <i class="fas fa-code"></i> CosLang
+          </a>
+          <a href="../status.md" class="footer-link">
+            <i class="fas fa-info-circle"></i> Status
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modular JS -->
+  <script type="module" src="scripts/corePlayer.js"></script>
+  <script type="module" src="scripts/main.js"></script>
+  <script type="module" src="scripts/dialogues.js"></script>
+  <script type="module" src="scripts/ui.js"></script>
+  <script type="module" src="scripts/fileloader.js"></script>
+  <script type="module">
+    import { parseCosLang } from '../js/cosmosx-engine/core/CosmosEngine/parser.js';
+    window.parseCosLang = parseCosLang;
+  </script>
+</body>
+</html> 

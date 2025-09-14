@@ -1,0 +1,51 @@
+title: "Math Operations Test"
+author: "Test Suite"
+version: "1.0.0"
+
+vars {
+    number_a = 10
+    number_b = 5
+    result = 0
+}
+
+stats {
+    base_damage = 15
+    multiplier = 2
+}
+
+scene start {
+    text: "Testing mathematical operations..."
+    text: "Starting values: A = {number_a}, B = {number_b}"
+    text: "Base damage: {base_damage}, Multiplier: {multiplier}"
+    
+    # Addition
+    set result = number_a + number_b
+    text: "Addition: {number_a} + {number_b} = {result}"
+    
+    # Subtraction
+    set result = number_a - number_b
+    text: "Subtraction: {number_a} - {number_b} = {result}"
+    
+    # Multiplication
+    set result = number_a * number_b
+    text: "Multiplication: {number_a} * {number_b} = {result}"
+    
+    # Division
+    set result = number_a / number_b
+    text: "Division: {number_a} / {number_b} = {result}"
+    
+    # Complex expression
+    set result = (number_a + number_b) * multiplier
+    text: "Complex: ({number_a} + {number_b}) * {multiplier} = {result}"
+    
+    # Using stats in calculations
+    set result = base_damage * multiplier + number_a
+    text: "Mixed stats: {base_damage} * {multiplier} + {number_a} = {result}"
+    
+    choice "Test complete" -> end
+}
+
+scene end {
+    text: "Math operations test completed!"
+    text: "Final result: {result}"
+}

@@ -1,0 +1,111 @@
+title: "Conditional Choices Test"
+author: "Test Suite"
+version: "1.0.0"
+
+vars {
+    has_key = false
+    gold = 30
+    level = 2
+}
+
+stats {
+    strength = 8
+    intelligence = 12
+}
+
+inventory {
+    sword = 0
+    potion = 1
+}
+
+scene start {
+    text: "Testing conditional choice availability..."
+    text: "Stats: STR {strength}, INT {intelligence}, Level {level}"
+    text: "Gold: {gold}, Has key: {has_key}"
+    text: "Inventory: Sword {sword}, Potion {potion}"
+    
+    # Always available choice
+    choice "Basic choice (always available)" -> basic_choice
+    
+    # Conditional choices based on different conditions
+    if gold >= 25 {
+        choice "Buy something (requires 25+ gold)" -> buy_item
+    }
+    
+    if strength >= 10 {
+        choice "Use strength (requires 10+ STR)" -> strength_action
+    }
+    
+    if intelligence >= 10 {
+        choice "Use intelligence (requires 10+ INT)" -> intelligence_action
+    }
+    
+    if has_key {
+        choice "Use key (requires key)" -> use_key
+    }
+    
+    if sword > 0 {
+        choice "Attack with sword (requires sword)" -> sword_attack
+    }
+    
+    # Multiple condition choice
+    if level >= 2 and gold >= 20 {
+        choice "Special action (requires level 2+ and 20+ gold)" -> special_action
+    }
+}
+
+scene basic_choice {
+    text: "You chose the basic option."
+    choice "Continue" -> end
+}
+
+scene buy_item {
+    text: "You buy a key for 20 gold."
+    set gold = gold - 20
+    set has_key = true
+    text: "Gold remaining: {gold}"
+    choice "Continue" -> start
+}
+
+scene strength_action {
+    text: "You use your strength to break down a door."
+    text: "Your strength of {strength} is not enough!"
+    choice "Continue" -> end
+}
+
+scene intelligence_action {
+    text: "You use your intelligence to solve a puzzle."
+    text: "Your intelligence of {intelligence} allows you to succeed!"
+    set sword = sword + 1
+    text: "You found a sword!"
+    choice "Continue" -> start
+}
+
+scene use_key {
+    text: "You use the key to unlock a treasure chest."
+    set gold = gold + 50
+    set has_key = false
+    text: "You found 50 gold! Total: {gold}"
+    choice "Continue" -> start
+}
+
+scene sword_attack {
+    text: "You attack with your sword!"
+    text: "Victory! You gain experience."
+    set level = level + 1
+    text: "Level up! New level: {level}"
+    choice "Continue" -> start
+}
+
+scene special_action {
+    text: "You perform a special high-level action!"
+    text: "This required level {level} and cost 15 gold."
+    set gold = gold - 15
+    text: "Gold remaining: {gold}"
+    choice "Continue" -> end
+}
+
+scene end {
+    text: "Conditional choices test completed!"
+    text: "Final stats: Level {level}, Gold {gold}, Key {has_key}, Sword {sword}"
+}

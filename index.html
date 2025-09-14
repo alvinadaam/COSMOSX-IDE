@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COSMOSX IDE - Enhanced Dark Theme</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logos/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="assets/logos/favicon.svg">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/ide-theme.css">
+    <link rel="stylesheet" href="css/ide-enhanced.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Monaco Editor Loader (must be before your custom Monaco setup) -->
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs/loader.js"></script>
+    <script>
+        require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs' } });
+        window.MonacoEnvironment = { getWorkerUrl: () => proxy };
+        let proxy = URL.createObjectURL(new Blob([`
+            self.MonacoEnvironment = {baseUrl: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/'};
+            importScripts('https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs/base/worker/workerMain.js');
+        `], { type: 'text/javascript' }));
+    </script>
+    <script type="module" src="js/monaco-setup.js"></script>
+    <script type="module" src="js/ide-ui-enhanced.js"></script>
+    <script type="module" src="js/ide-core-enhanced.js"></script>
+    <script type="module" src="js/syntax-validator.js"></script>
+    <script type="module" src="js/autocomplete.js"></script>
+    <script type="module" src="js/ide-actions.js"></script>
+    <script type="module" src="js/ide-modules/scrollbar-system.js"></script>
+    <script src="js/ide-modules/debug-panels.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+                    <img src="assets/logos/cosmosx-logo.svg" alt="COSMOSX IDE" class="logo-svg">
+        </div>
+        <div class="controls">
+            <button id="new-btn" class="btn tooltip" data-tooltip="Create new story">
+                <i class="fas fa-plus"></i> New
+            </button>
+            <button id="open-btn" class="btn tooltip" data-tooltip="Open existing story">
+                <i class="fas fa-folder-open"></i> Open
+            </button>
+            <button id="save-btn" class="btn tooltip" data-tooltip="Save current story">
+                <i class="fas fa-save"></i> Save
+            </button>
+            <button id="export-btn" class="btn tooltip" data-tooltip="Export story for distribution">
+                <i class="fas fa-download"></i> Export
+            </button>
+            <button id="rename-btn" class="btn tooltip" data-tooltip="Rename current file">
+                <i class="fas fa-edit"></i> Rename
+            </button>
+            <button id="duplicate-btn" class="btn tooltip" data-tooltip="Duplicate current file">
+                <i class="fas fa-copy"></i> Duplicate
+            </button>
+            <button id="delete-btn" class="btn tooltip" data-tooltip="Delete current file">
+                <i class="fas fa-trash"></i> Delete
+            </button>
+            <button id="preview-btn" class="btn primary tooltip" data-tooltip="Switch to live preview">
+                <i class="fas fa-play"></i> Preview
+            </button>
+            <input type="file" id="file-input" accept=".coslang" style="display:none">
+            <div class="help-dropdown">
+                <button id="help-btn" class="btn tooltip" data-tooltip="Learn & Help">
+                    <i class="fas fa-question"></i>
+                </button>
+                <div id="help-menu">
+                    <a href="docs/COSLANG/learn.html" target="_blank">Learn Coslang</a>
+                    <a href="docs/COSMOSX/learn.html" target="_blank">Learn CosmosX IDE</a>
+                    <a href="BigDebugger/index.html" target="_blank">BigDebugger</a>
+                    <a href="BigDebugger/index.html#section-tests" target="_blank">Tests</a>
+                    <a href="player/index.html" target="_blank">CosmosX Player Engine</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <!-- Left Sidebar - Scenes & Navigation -->
+        <div class="sidebar left-sidebar">
+            <div class="panel-header">
+                <span><i class="fas fa-list"></i> Scenes</span>
+                <div>
+                    <i class="fas fa-search" id="search-scenes" title="Search Scenes"></i>
+                    <i class="fas fa-sync-alt" id="refresh-scenes" title="Refresh Scenes"></i>
+                    <i class="fas fa-plus" id="add-scene" title="Add New Scene"></i>
+                </div>
+            </div>
+            <div class="panel-search">
+                <input type="text" id="scene-search" placeholder="Search scenes by name or tags..." autocomplete="off">
+            </div>
+            <div class="panel-content" id="scene-list">
+                <!-- Metadata section will be dynamically populated -->
+                <div class="metadata-section"></div>
+                <!-- Scene items will be dynamically populated by the engine -->
+            </div>
+        </div>
+        <!-- Main Editor Area -->
+        <div class="editor-container">
+            <!-- Editor Tabs -->
+            <div class="editor-tabs">
+                <div class="tab active" data-tab="editor">
+                    <i class="fas fa-code"></i>
+                    <span>Editor</span>
+                </div>
+                <div class="tab" data-tab="preview">
+                    <i class="fas fa-eye"></i>
+                    <span>Preview</span>
+                </div>
+                <div class="tab" data-tab="debug">
+                    <i class="fas fa-bug"></i>
+                    <span>Debug</span>
+                </div>
+            </div>
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Editor Tab -->
+                <div class="tab-pane active" id="editor-tab">
+            <div id="editor"></div>
+                </div>
+                <!-- Preview Tab -->
+                <div class="tab-pane" id="preview-tab">
+                    <div class="modern-preview-container">
+                        <!-- Top Control Bar -->
+                        <div class="preview-control-bar">
+                            <div class="preview-controls-left">
+                                <button id="play-preview" class="preview-control-btn primary">
+                                    <i class="fas fa-play"></i>
+                                    <span>Play</span>
+                                </button>
+                                <button id="pause-preview" class="preview-control-btn" style="display: none;">
+                                    <i class="fas fa-pause"></i>
+                                    <span>Pause</span>
+                                </button>
+                                <button id="reset-preview" class="preview-control-btn">
+                                    <i class="fas fa-undo"></i>
+                                    <span>Reset</span>
+                                </button>
+                                <button id="step-preview" class="preview-control-btn">
+                                    <i class="fas fa-step-forward"></i>
+                                    <span>Step</span>
+                                </button>
+                            </div>
+                            
+                            <div class="preview-status-center">
+                                <div class="story-progress">
+                                    <div class="progress-info">
+                                        <span id="current-scene-name">No Scene</span>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" id="story-progress-fill"></div>
+                                        </div>
+                                        <span id="progress-text">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="preview-controls-right">
+                                <button id="preview-settings" class="preview-control-btn">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                                <button id="fullscreen-preview" class="preview-control-btn">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Main Preview Area -->
+                        <div class="preview-main-area">
+                            <!-- Story Display -->
+                            <div class="story-display-area">
+                                <div id="preview-story-content" class="story-content">
+                                    <div class="welcome-screen">
+                                        <div class="welcome-icon">
+                                            <i class="fas fa-book-open"></i>
+                                        </div>
+                                        <h3>Interactive Story Preview</h3>
+                                        <p>Your story will appear here when you click Play</p>
+                                        <div class="quick-tips">
+                                            <div class="tip">
+                                                <i class="fas fa-lightbulb"></i>
+                                                <span>Write your story in the Editor tab</span>
+                                            </div>
+                                            <div class="tip">
+                                                <i class="fas fa-play"></i>
+                                                <span>Click Play to test your story</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Choice Area -->
+                                <div id="preview-choices-area" class="choices-area">
+                                    <!-- Choices will be dynamically added here -->
+                                </div>
+                            </div>
+                            
+                            <!-- Side Panel -->
+                            <div class="preview-side-panel">
+                                <div class="panel-tabs">
+                                    <button class="panel-tab active" data-panel="stats">
+                                        <i class="fas fa-chart-line"></i>
+                                        <span>Stats</span>
+                                    </button>
+                                    <button class="panel-tab" data-panel="inventory">
+                                        <i class="fas fa-briefcase"></i>
+                                        <span>Items</span>
+                                    </button>
+                                    <button class="panel-tab" data-panel="variables">
+                                        <i class="fas fa-code"></i>
+                                        <span>Variables</span>
+                                    </button>
+                                    <button class="panel-tab" data-panel="log">
+                                        <i class="fas fa-history"></i>
+                                        <span>Log</span>
+                                    </button>
+                                </div>
+                                
+                                <div class="panel-content-area">
+                                    <div id="stats-panel" class="side-panel-content active">
+                                        <div class="panel-header">
+                                            <h4><i class="fas fa-chart-line"></i> Statistics</h4>
+                                        </div>
+                                        <div id="stats-content" class="panel-body">
+                                            <div class="empty-panel">
+                                                <i class="fas fa-chart-line"></i>
+                                                <p>No stats yet</p>
+                                                <small>Statistics will appear as your story progresses</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="inventory-panel" class="side-panel-content">
+                                        <div class="panel-header">
+                                            <h4><i class="fas fa-briefcase"></i> Inventory</h4>
+                                        </div>
+                                        <div id="inventory-content" class="panel-body">
+                                            <div class="empty-panel">
+                                                <i class="fas fa-briefcase"></i>
+                                                <p>Empty inventory</p>
+                                                <small>Items will appear as you collect them</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="variables-panel" class="side-panel-content">
+                                        <div class="panel-header">
+                                            <h4><i class="fas fa-code"></i> Variables</h4>
+                                        </div>
+                                        <div id="variables-content" class="panel-body">
+                                            <div class="empty-panel">
+                                                <i class="fas fa-code"></i>
+                                                <p>No variables</p>
+                                                <small>Variables will appear as they're defined</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="log-panel" class="side-panel-content">
+                                        <div class="panel-header">
+                                            <h4><i class="fas fa-history"></i> Activity Log</h4>
+                                        </div>
+                                        <div id="log-content" class="panel-body">
+                                            <div class="empty-panel">
+                                                <i class="fas fa-history"></i>
+                                                <p>No activity</p>
+                                                <small>Actions will be logged here</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Debug Tab -->
+                <div class="tab-pane" id="debug-tab">
+                    <div class="debug-container">
+                        <!-- Story Analysis Panel -->
+                        <div class="debug-panel collapsed" data-panel="story-analysis">
+                            <h3>
+                                <i class="fas fa-book-open"></i> Story Analysis
+                                <i class="fas fa-chevron-down panel-toggle"></i>
+                                <button class="refresh-btn" title="Refresh Story Analysis">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </h3>
+                            <div class="debug-content">
+                                <div class="debug-description">
+                                    Analyze your story structure, scenes, and narrative flow. Get insights into your story's complexity and metadata.
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="scenes-overview">
+                                    <h4>
+                                        <i class="fas fa-list"></i> Scenes Overview
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="scenes-overview-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Total Scenes:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Start Scene:</span>
+                                            <span class="debug-value">None</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">End Scenes:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="narrative-flow">
+                                    <h4>
+                                        <i class="fas fa-route"></i> Narrative Flow
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="narrative-flow-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Story Length:</span>
+                                            <span class="debug-value">0 words</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Avg. Choices:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Complexity:</span>
+                                            <span class="debug-value">Low</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="story-metadata">
+                                    <h4>
+                                        <i class="fas fa-info-circle"></i> Story Metadata
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="story-metadata-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Title:</span>
+                                            <span class="debug-value">Untitled</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Author:</span>
+                                            <span class="debug-value">Unknown</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Version:</span>
+                                            <span class="debug-value">1.0.0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Variables & State Panel -->
+                        <div class="debug-panel collapsed" data-panel="variables-state">
+                            <h3>
+                                <i class="fas fa-code-branch"></i> Variables & State
+                                <i class="fas fa-chevron-down panel-toggle"></i>
+                                <button class="refresh-btn" title="Refresh Variables">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </h3>
+                            <div class="debug-content">
+                                <div class="debug-description">
+                                    Monitor your story's variables, track state changes, and view the current game environment.
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="global-variables">
+                                    <h4>
+                                        <i class="fas fa-globe"></i> Global Variables
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="debug-vars">
+                                        <div class="debug-empty">No variables defined</div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="local-variables">
+                                    <h4>
+                                        <i class="fas fa-map-marker-alt"></i> Local Variables
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="local-vars-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Current Scene:</span>
+                                            <span class="debug-value">None</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Scene Variables:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Temp Variables:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="variable-history">
+                                    <h4>
+                                        <i class="fas fa-history"></i> Variable History
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="variable-history-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Changes:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Last Modified:</span>
+                                            <span class="debug-value">Never</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Tracked Vars:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance & Stats Panel -->
+                        <div class="debug-panel collapsed" data-panel="performance-stats">
+                            <h3>
+                                <i class="fas fa-chart-line"></i> Performance & Stats
+                                <i class="fas fa-chevron-down panel-toggle"></i>
+                                <button class="refresh-btn" title="Refresh Performance">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </h3>
+                            <div class="debug-content">
+                                <div class="debug-description">
+                                    Track system performance, story statistics, and execution metrics in real-time.
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="story-stats">
+                                    <h4>
+                                        <i class="fas fa-chart-bar"></i> Story Statistics
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="debug-stats">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Scenes:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Choices:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Text Blocks:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="system-performance">
+                                    <h4>
+                                        <i class="fas fa-tachometer-alt"></i> System Performance
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="system-performance-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">FPS:</span>
+                                            <span class="debug-value">60</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Memory:</span>
+                                            <span class="debug-value">24.5 MB</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">CPU:</span>
+                                            <span class="debug-value">2.3%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="execution-time">
+                                    <h4>
+                                        <i class="fas fa-clock"></i> Execution Time
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="execution-time-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Parse Time:</span>
+                                            <span class="debug-value">0ms</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Render Time:</span>
+                                            <span class="debug-value">0ms</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Update Time:</span>
+                                            <span class="debug-value">0ms</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Inventory & Items Panel -->
+                        <div class="debug-panel collapsed" data-panel="inventory-items">
+                            <h3>
+                                <i class="fas fa-briefcase"></i> Inventory & Items
+                                <i class="fas fa-chevron-down panel-toggle"></i>
+                                <button class="refresh-btn" title="Refresh Inventory">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </h3>
+                            <div class="debug-content">
+                                <div class="sub-panel collapsed" data-sub-panel="player-inventory">
+                                    <h4>
+                                        <i class="fas fa-user"></i> Player Inventory
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="debug-inventory">
+                                        <div class="debug-empty">No inventory defined</div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="item-database">
+                                    <h4>
+                                        <i class="fas fa-database"></i> Item Database
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="item-database-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Total Items:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Categories:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Rare Items:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="item-interactions">
+                                    <h4>
+                                        <i class="fas fa-handshake"></i> Item Interactions
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="item-interactions-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Used Items:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Combined Items:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Crafted Items:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Events & Logs Panel -->
+                        <div class="debug-panel collapsed" data-panel="events-logs">
+                            <h3>
+                                <i class="fas fa-list-alt"></i> Events & Logs
+                                <i class="fas fa-chevron-down panel-toggle"></i>
+                                <button class="refresh-btn" title="Refresh Logs">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </h3>
+                            <div class="debug-content">
+                                <div class="sub-panel collapsed" data-sub-panel="system-log">
+                                    <h4>
+                                        <i class="fas fa-terminal"></i> System Log
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="debug-log">
+                                        <div class="debug-item info">
+                                            <span class="debug-time">12:00:00</span>
+                                            <span class="debug-message">IDE initialized successfully</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="event-timeline">
+                                    <h4>
+                                        <i class="fas fa-calendar-alt"></i> Event Timeline
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="event-timeline-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Story Events:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Achievements:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Triggers:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="error-log">
+                                    <h4>
+                                        <i class="fas fa-exclamation-triangle"></i> Error Log
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="error-log-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Errors:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Warnings:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Last Error:</span>
+                                            <span class="debug-value">None</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Network & Connectivity Panel -->
+                        <div class="debug-panel collapsed" data-panel="network-connectivity">
+                            <h3>
+                                <i class="fas fa-network-wired"></i> Network & Connectivity
+                                <i class="fas fa-chevron-down panel-toggle"></i>
+                                <button class="refresh-btn" title="Refresh Network">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </h3>
+                            <div class="debug-content">
+                                <div class="sub-panel collapsed" data-sub-panel="connection-status">
+                                    <h4>
+                                        <i class="fas fa-wifi"></i> Connection Status
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="connection-status-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Status:</span>
+                                            <span class="debug-value">Connected</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Latency:</span>
+                                            <span class="debug-value">45ms</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Bandwidth:</span>
+                                            <span class="debug-value">1.2 Mbps</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="api-requests">
+                                    <h4>
+                                        <i class="fas fa-exchange-alt"></i> API Requests
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="api-requests-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Total Requests:</span>
+                                            <span class="debug-value">127</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Success Rate:</span>
+                                            <span class="debug-value">98.4%</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Avg Response:</span>
+                                            <span class="debug-value">120ms</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="sync-status">
+                                    <h4>
+                                        <i class="fas fa-sync"></i> Sync Status
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="sync-status-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Auto Save:</span>
+                                            <span class="debug-value">Enabled</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Last Sync:</span>
+                                            <span class="debug-value">2 min ago</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Cloud Sync:</span>
+                                            <span class="debug-value">Offline</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Code Quality & Standards Panel -->
+                        <div class="debug-panel collapsed" data-panel="code-quality">
+                            <h3>
+                                <i class="fas fa-code"></i> Code Quality & Standards
+                                <i class="fas fa-chevron-down panel-toggle"></i>
+                                <button class="refresh-btn" title="Refresh Code Quality">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </h3>
+                            <div class="debug-content">
+                                <div class="sub-panel collapsed" data-sub-panel="syntax-analysis">
+                                    <h4>
+                                        <i class="fas fa-search"></i> Syntax Analysis
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="syntax-analysis-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Syntax Errors:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Warnings:</span>
+                                            <span class="debug-value">2</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Code Style:</span>
+                                            <span class="debug-value">Good</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="best-practices">
+                                    <h4>
+                                        <i class="fas fa-check-circle"></i> Best Practices
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="best-practices-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Naming Conventions:</span>
+                                            <span class="debug-value">95%</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Documentation:</span>
+                                            <span class="debug-value">80%</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Structure:</span>
+                                            <span class="debug-value">Excellent</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="complexity-metrics">
+                                    <h4>
+                                        <i class="fas fa-brain"></i> Complexity Metrics
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="complexity-metrics-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Cyclomatic:</span>
+                                            <span class="debug-value">3.2</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Cognitive Load:</span>
+                                            <span class="debug-value">Low</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Maintainability:</span>
+                                            <span class="debug-value">High</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Asset Management Panel -->
+                        <div class="debug-panel collapsed" data-panel="asset-management">
+                            <h3>
+                                <i class="fas fa-images"></i> Asset Management
+                                <i class="fas fa-chevron-down panel-toggle"></i>
+                                <button class="refresh-btn" title="Refresh Assets">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </h3>
+                            <div class="debug-content">
+                                <div class="sub-panel collapsed" data-sub-panel="asset-inventory">
+                                    <h4>
+                                        <i class="fas fa-clipboard-list"></i> Asset Inventory
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="asset-inventory-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Total Assets:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Images:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Audio:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="asset-optimization">
+                                    <h4>
+                                        <i class="fas fa-compress-arrows-alt"></i> Asset Optimization
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="asset-optimization-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Total Size:</span>
+                                            <span class="debug-value">0 MB</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Compression:</span>
+                                            <span class="debug-value">N/A</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Loading Time:</span>
+                                            <span class="debug-value">0ms</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="asset-usage">
+                                    <h4>
+                                        <i class="fas fa-link"></i> Asset Usage
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="asset-usage-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Referenced:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Unused:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Broken Links:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Experience Panel -->
+                        <div class="debug-panel collapsed" data-panel="user-experience">
+                            <h3>
+                                <i class="fas fa-user-check"></i> User Experience
+                                <i class="fas fa-chevron-down panel-toggle"></i>
+                                <button class="refresh-btn" title="Refresh UX">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </h3>
+                            <div class="debug-content">
+                                <div class="sub-panel collapsed" data-sub-panel="accessibility">
+                                    <h4>
+                                        <i class="fas fa-universal-access"></i> Accessibility
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="accessibility-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">WCAG Compliance:</span>
+                                            <span class="debug-value">AA</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Screen Reader:</span>
+                                            <span class="debug-value">Ready</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Keyboard Nav:</span>
+                                            <span class="debug-value">Full</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="usability-metrics">
+                                    <h4>
+                                        <i class="fas fa-mouse-pointer"></i> Usability Metrics
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="usability-metrics-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Click Paths:</span>
+                                            <span class="debug-value">3</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Avg. Session:</span>
+                                            <span class="debug-value">5m 30s</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Bounce Rate:</span>
+                                            <span class="debug-value">12%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="user-feedback">
+                                    <h4>
+                                        <i class="fas fa-comments"></i> User Feedback
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="user-feedback-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Rating:</span>
+                                            <span class="debug-value">4.8/5</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Reviews:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Satisfaction:</span>
+                                            <span class="debug-value">High</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Advanced Analytics Panel -->
+                        <div class="debug-panel collapsed" data-panel="advanced-analytics">
+                            <h3>
+                                <i class="fas fa-chart-pie"></i> Advanced Analytics
+                                <i class="fas fa-chevron-down panel-toggle"></i>
+                                <button class="refresh-btn" title="Refresh Analytics">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </h3>
+                            <div class="debug-content">
+                                <div class="sub-panel collapsed" data-sub-panel="story-analytics">
+                                    <h4>
+                                        <i class="fas fa-chart-line"></i> Story Analytics
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="story-analytics-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Engagement Score:</span>
+                                            <span class="debug-value">85%</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Completion Rate:</span>
+                                            <span class="debug-value">92%</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Replay Value:</span>
+                                            <span class="debug-value">High</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="player-behavior">
+                                    <h4>
+                                        <i class="fas fa-users"></i> Player Behavior
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="player-behavior-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Avg. Play Time:</span>
+                                            <span class="debug-value">15m</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Choice Patterns:</span>
+                                            <span class="debug-value">Balanced</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Return Rate:</span>
+                                            <span class="debug-value">78%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="trend-analysis">
+                                    <h4>
+                                        <i class="fas fa-trending-up"></i> Trend Analysis
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="trend-analysis-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Growth Rate:</span>
+                                            <span class="debug-value">+15%</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Peak Hours:</span>
+                                            <span class="debug-value">7-9 PM</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Popular Scenes:</span>
+                                            <span class="debug-value">3</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security & Validation Panel -->
+                        <div class="debug-panel collapsed" data-panel="security-validation">
+                            <h3>
+                                <i class="fas fa-shield-alt"></i> Security & Validation
+                                <i class="fas fa-chevron-down panel-toggle"></i>
+                                <button class="refresh-btn" title="Refresh Security">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </h3>
+                            <div class="debug-content">
+                                <div class="sub-panel collapsed" data-sub-panel="security-checks">
+                                    <h4>
+                                        <i class="fas fa-lock"></i> Security Checks
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="security-checks-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Vulnerabilities:</span>
+                                            <span class="debug-value">0</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Data Encryption:</span>
+                                            <span class="debug-value">Enabled</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Access Control:</span>
+                                            <span class="debug-value">Secure</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="data-validation">
+                                    <h4>
+                                        <i class="fas fa-check-double"></i> Data Validation
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="data-validation-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Input Validation:</span>
+                                            <span class="debug-value">100%</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Sanitization:</span>
+                                            <span class="debug-value">Active</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Type Safety:</span>
+                                            <span class="debug-value">Strong</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="compliance">
+                                    <h4>
+                                        <i class="fas fa-certificate"></i> Compliance
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="compliance-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">GDPR:</span>
+                                            <span class="debug-value">Compliant</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">COPPA:</span>
+                                            <span class="debug-value">Compliant</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Accessibility:</span>
+                                            <span class="debug-value">WCAG AA</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Development Tools Panel -->
+                        <div class="debug-panel collapsed" data-panel="development-tools">
+                            <h3>
+                                <i class="fas fa-tools"></i> Development Tools
+                                <i class="fas fa-chevron-down panel-toggle"></i>
+                                <button class="refresh-btn" title="Refresh Tools">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </h3>
+                            <div class="debug-content">
+                                <div class="sub-panel collapsed" data-sub-panel="version-control">
+                                    <h4>
+                                        <i class="fas fa-code-branch"></i> Version Control
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="version-control-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Git Status:</span>
+                                            <span class="debug-value">Clean</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Last Commit:</span>
+                                            <span class="debug-value">2h ago</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Branch:</span>
+                                            <span class="debug-value">main</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="testing">
+                                    <h4>
+                                        <i class="fas fa-vial"></i> Testing
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="testing-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Test Coverage:</span>
+                                            <span class="debug-value">87%</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Passing Tests:</span>
+                                            <span class="debug-value">24/26</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Performance:</span>
+                                            <span class="debug-value">Good</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-panel collapsed" data-sub-panel="deployment">
+                                    <h4>
+                                        <i class="fas fa-rocket"></i> Deployment
+                                        <i class="fas fa-chevron-down sub-toggle"></i>
+                                    </h4>
+                                    <div class="sub-content" id="deployment-content">
+                                        <div class="debug-item">
+                                            <span class="debug-label">Environment:</span>
+                                            <span class="debug-value">Development</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Build Status:</span>
+                                            <span class="debug-value">Success</span>
+                                        </div>
+                                        <div class="debug-item">
+                                            <span class="debug-label">Deploy Ready:</span>
+                                            <span class="debug-value">Yes</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Right Sidebar - Errors & Assets -->
+        <div class="sidebar right-sidebar">
+            <!-- Errors Panel -->
+            <div class="panel-header">
+                <span><i class="fas fa-exclamation-triangle"></i> Errors & Warnings</span>
+                <div>
+                    <span id="error-count" class="error-badge">0</span>
+                </div>
+            </div>
+            <div class="panel-content" id="error-list">
+                <!-- Error items will be dynamically populated by the engine -->
+            </div>
+            <!-- Assets Panel -->
+            <div class="panel-header">
+                <span><i class="fas fa-images"></i> Assets</span>
+                <div>
+                    <i class="fas fa-plus" id="add-asset" title="Add Asset"></i>
+                </div>
+            </div>
+            <div class="panel-content" id="asset-list">
+                <div class="asset-category">
+                    <h4><i class="fas fa-image"></i> Images</h4>
+                    <div id="image-assets" class="asset-grid"></div>
+                </div>
+                <div class="asset-category">
+                    <h4><i class="fas fa-music"></i> Audio</h4>
+                    <div id="audio-assets" class="asset-grid"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div class="status-bar">
+        <div id="status"><i class="fas fa-check-circle"></i> Ready</div>
+        <div id="scene-count"><i class="fas fa-scroll"></i> 0 scenes</div>
+        <div id="line-info"><i class="fas fa-code"></i> Line 1, Column 1</div>
+    </div>
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+</body>
+</html>

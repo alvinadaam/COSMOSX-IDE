@@ -1,0 +1,229 @@
+title: "Advanced Nested Conditionals"
+author: "Smart Test Suite"
+version: "1.0.0"
+
+vars {
+    player_class = "warrior"
+    level = 5
+    health = 85
+    mana = 40
+    reputation = 75
+    quest_stage = 2
+}
+
+stats {
+    strength = 15
+    intelligence = 8
+    charisma = 12
+    luck = 6
+}
+
+inventory {
+    weapon = 1
+    armor = 1
+    magic_item = 0
+    gold = 150
+}
+
+scene start {
+    text: "Advanced conditional logic test with complex nested scenarios."
+    text: "Class: {player_class}, Level: {level}, Health: {health}, Mana: {mana}"
+    text: "Reputation: {reputation}, Quest Stage: {quest_stage}"
+    
+    # Complex nested conditionals with multiple paths
+    if player_class == "warrior" {
+        if strength >= 15 {
+            if weapon > 0 and armor > 0 {
+                text: "🗡️ Elite Warrior: Fully equipped and powerful!"
+                if reputation >= 70 {
+                    text: "Your legendary status opens unique opportunities."
+                    choice "Challenge the arena champion" -> arena_champion
+                    choice "Lead a military campaign" -> military_campaign
+                } else {
+                    text: "You need more reputation for elite missions."
+                    choice "Build reputation through quests" -> reputation_quests
+                }
+            } else {
+                text: "⚔️ Strong warrior but lacking equipment."
+                choice "Seek better equipment" -> equipment_quest
+            }
+        } else {
+            text: "💪 Warrior in training - need more strength."
+            choice "Train at the warrior guild" -> strength_training
+        }
+    } else if player_class == "mage" {
+        if intelligence >= 12 and mana >= 30 {
+            if magic_item > 0 {
+                text: "🔮 Archmage: Master of mystical arts!"
+                choice "Cast legendary spell" -> legendary_magic
+            } else {
+                text: "🧙 Skilled mage seeking magical artifacts."
+                choice "Search for magic items" -> magic_quest
+            }
+        } else {
+            text: "📚 Apprentice mage still learning."
+            choice "Study at the magic academy" -> magic_training
+        }
+    } else {
+        text: "🎭 Unique class path with special opportunities."
+        choice "Explore class-specific content" -> unique_path
+    }
+    
+    # Always available fallback
+    choice "Return to character selection" -> class_selection
+}
+
+scene arena_champion {
+    text: "🏟️ ARENA CHAMPION CHALLENGE"
+    
+    # Multi-layered combat with stat checks
+    if strength >= 15 and luck >= 5 {
+        text: "Your strength and luck combine for victory!"
+        set reputation = reputation + 25
+        set gold = gold + 200
+        text: "Victory! Reputation +25, Gold +200"
+        
+        if reputation >= 100 {
+            text: "You've achieved legendary status!"
+            choice "Claim your legendary reward" -> legendary_reward
+        } else {
+            choice "Continue your journey" -> end
+        }
+    } else if strength >= 15 {
+        text: "Your strength carries you, but it's a close fight."
+        set health = health - 30
+        set reputation = reputation + 15
+        text: "Narrow victory! Health -{30}, Reputation +15"
+        choice "Continue" -> end
+    } else {
+        text: "The champion proves too powerful."
+        set health = health - 50
+        text: "Defeat! Health -{50}"
+        choice "Retreat and train more" -> strength_training
+    }
+}
+
+scene military_campaign {
+    text: "⚔️ MILITARY CAMPAIGN LEADERSHIP"
+    
+    # Leadership scenario with multiple skill checks
+    if charisma >= 10 and reputation >= 75 {
+        text: "Your leadership inspires the troops to victory!"
+        
+        macro campaign_success() {
+            set reputation = reputation + 30
+            set gold = gold + 300
+            set quest_stage = quest_stage + 1
+            text: "Campaign successful! Major rewards gained."
+            return "total_victory"
+        }
+        
+        set campaign_result = campaign_success()
+        
+        if quest_stage >= 3 {
+            text: "Your military success advances the main quest!"
+            choice "Continue the main storyline" -> main_quest_advance
+        } else {
+            choice "Plan the next campaign" -> next_campaign
+        }
+    } else {
+        text: "Leadership challenges arise during the campaign."
+        
+        if intelligence >= 10 {
+            text: "Your tactical intelligence saves the day."
+            set reputation = reputation + 15
+            choice "Continue" -> end
+        } else {
+            text: "The campaign faces setbacks."
+            set reputation = reputation - 10
+            choice "Learn from mistakes" -> leadership_training
+        }
+    }
+}
+
+scene legendary_reward {
+    text: "🏆 LEGENDARY ACHIEVEMENT UNLOCKED"
+    text: "Your legendary status grants access to ultimate rewards!"
+    
+    # Multiple reward paths based on accumulated choices
+    if gold >= 300 and reputation >= 100 {
+        text: "💎 The Ultimate Treasure: Choose your legendary reward!"
+        choice "The Crown of Kings (Political Power)" -> crown_ending
+        choice "The Sword of Legends (Combat Mastery)" -> sword_ending
+        choice "The Tome of Wisdom (Magical Knowledge)" -> tome_ending
+    } else {
+        text: "You're close to legendary status but need more achievements."
+        choice "Continue building your legend" -> legend_building
+    }
+}
+
+scene class_selection {
+    text: "🎭 CHARACTER CLASS SELECTION"
+    text: "Choose your path and see how different builds affect the story:"
+    
+    choice "Become a Warrior (STR focus)" -> warrior_path
+    choice "Become a Mage (INT focus)" -> mage_path
+    choice "Become a Diplomat (CHA focus)" -> diplomat_path
+    choice "Create a Hybrid build" -> hybrid_path
+}
+
+scene warrior_path {
+    set player_class = "warrior"
+    set strength = strength + 5
+    set weapon = weapon + 1
+    text: "⚔️ Warrior path chosen! Strength +5, Weapon +1"
+    choice "Begin warrior journey" -> start
+}
+
+scene mage_path {
+    set player_class = "mage"
+    set intelligence = intelligence + 5
+    set mana = mana + 20
+    set magic_item = magic_item + 1
+    text: "🔮 Mage path chosen! Intelligence +5, Mana +20, Magic Item +1"
+    choice "Begin magical journey" -> start
+}
+
+scene diplomat_path {
+    set player_class = "diplomat"
+    set charisma = charisma + 5
+    set reputation = reputation + 25
+    text: "🎭 Diplomat path chosen! Charisma +5, Reputation +25"
+    choice "Begin diplomatic journey" -> start
+}
+
+scene hybrid_path {
+    set player_class = "hybrid"
+    set strength = strength + 2
+    set intelligence = intelligence + 2
+    set charisma = charisma + 2
+    text: "⚖️ Hybrid path chosen! Balanced stat increases"
+    choice "Begin balanced journey" -> start
+}
+
+# Placeholder scenes for complex branches
+scene main_quest_advance {
+    text: "🎯 Main quest advances to the final chapter!"
+    choice "Continue" -> end
+}
+
+scene crown_ending {
+    text: "👑 You claim the Crown of Kings and rule wisely!"
+    choice "Rule your kingdom" -> end
+}
+
+scene sword_ending {
+    text: "⚔️ You wield the Sword of Legends as the ultimate warrior!"
+    choice "Defend the realm" -> end
+}
+
+scene tome_ending {
+    text: "📚 The Tome of Wisdom grants you infinite knowledge!"
+    choice "Share your wisdom" -> end
+}
+
+scene end {
+    text: "Advanced nested conditionals test completed!"
+    text: "Final stats: Level {level}, Reputation {reputation}, Gold {gold}"
+    text: "Class: {player_class}, Quest Stage: {quest_stage}"
+}

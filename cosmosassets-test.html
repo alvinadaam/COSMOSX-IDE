@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CosmosAssets Full Test</title>
+  <style>
+    body { font-family: sans-serif; background: #181c20; color: #f0f0f0; margin: 0; padding: 0; }
+    .container { max-width: 700px; margin: 40px auto; background: #23272e; border-radius: 10px; box-shadow: 0 2px 16px #0008; padding: 32px; }
+    .asset-preview { margin: 24px 0; text-align: center; }
+    img, video, audio { max-width: 100%; border-radius: 8px; }
+    .controls { margin-top: 24px; text-align: center; }
+    button { background: #3a8fff; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1.1em; cursor: pointer; margin: 0 8px; }
+    button:disabled { background: #555; }
+    .log { font-size: 0.95em; color: #aaa; margin-top: 16px; }
+    .scene-text { font-size: 1.2em; margin: 16px 0; }
+    .debug { background: #181c20; color: #ffb347; font-size: 0.9em; padding: 8px; border-radius: 6px; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>CosmosAssets Engine Full Test</h2>
+    <div class="scene-text" id="sceneText">Loading...</div>
+    <div class="asset-preview" id="assetPreview"></div>
+    <div class="controls">
+      <button id="prevBtn">Previous</button>
+      <button id="nextBtn">Next</button>
+    </div>
+    <div class="log" id="log"></div>
+    <div class="debug" id="debug"></div>
+  </div>
+  <script type="module">
+    console.log("LOADED: cosmosassets-test.html v2024-asset-debug");
+    import { parseCosLang } from './js/cosmosx-engine/core/CosmosEngine/parser.js';
+    import { CosmosEngine } from './js/cosmosx-engine/core/CosmosEngine/engine.js';
+    import { cosmosAssets } from './js/cosmosx-engine/core/CosmosAssets/assets.js';
+    // Manual asset registration test
+    cosmosAssets.addAsset('image', 'manualtest', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80');
+    console.log('Manual test asset registry:', cosmosAssets.getAllAssets());
+    // Sample Coslang story with assets (using public URLs)
+    const coslang = `
+assets {
+  image background = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80"
+  audio theme = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+  video intro = "https://www.w3schools.com/html/mov_bbb.mp4"
+}
+
+title: "Asset Test"
+author: "CosmosX"
+version: "1.0"
+
+scene start {
+  show image background
+  text: "Welcome to the asset test!"
+  play audio theme
+  text: "Enjoy the music."
+  show video intro
+  text: "Now a video!"
+  choice "Next scene" -> next
+}
+
+scene next {
+  text: "No assets here."
+  choice "Back to start" -> start
+}
+`;
+    // Parse and initialize engine
+    const ast = parseCosLang(coslang);
+    window.cosmosAssets = cosmosAssets; // Expose for manual inspection
+    console.log('[CosmosAssetsTest] All registered assets:', cosmosAssets.getAllAssets());
+    const engine = new CosmosEngine(ast);
+    engine.start('start');
+    let history = [];
+    function logDebug(msg, ...args) {
+      console.log('[CosmosAssetsTest]', msg, ...args);
+    }
+    function render() {
+      const node = engine.getCurrentContent();
+      const textDiv = document.getElementById('sceneText');
+      const assetDiv = document.getElementById('assetPreview');
+      const logDiv = document.getElementById('log');
+      const debugDiv = document.getElementById('debug');
+      let assetInfo = '';
+      // Show text
+      if (node && node.type === 'text') {
+        textDiv.textContent = node.value.replace(/^"|"$/g, '');
+        logDebug('Text node:', node.value);
+      } else if (node && node.type === 'choice') {
+        textDiv.textContent = 'Choose:';
+        logDebug('Choice node:', node);
+      } else if (node) {
+        textDiv.textContent = `[${node.type}]`;
+        logDebug('Other node:', node);
+      } else {
+        textDiv.textContent = '';
+        logDebug('No node at current position.');
+      }
+      // Show asset
+      assetDiv.innerHTML = '';
+      if (engine.state.currentImage) {
+        assetDiv.innerHTML = `<img src="${engine.state.currentImage.resolvedPath}" alt="Image asset">`;
+        assetInfo = `Image: ${engine.state.currentImage.name} → ${engine.state.currentImage.resolvedPath}`;
+        logDebug('Showing image asset:', engine.state.currentImage);
+      } else if (engine.state.currentAudio) {
+        assetDiv.innerHTML = `<audio src="${engine.state.currentAudio.resolvedPath}" controls autoplay></audio>`;
+        assetInfo = `Audio: ${engine.state.currentAudio.name} → ${engine.state.currentAudio.resolvedPath}`;
+        logDebug('Playing audio asset:', engine.state.currentAudio);
+      } else if (engine.state.currentVideo) {
+        assetDiv.innerHTML = `<video src="${engine.state.currentVideo.resolvedPath}" controls autoplay></video>`;
+        assetInfo = `Video: ${engine.state.currentVideo.name} → ${engine.state.currentVideo.resolvedPath}`;
+        logDebug('Showing video asset:', engine.state.currentVideo);
+      } else {
+        assetInfo = 'No asset.';
+        logDebug('No asset to display.');
+      }
+      // Show asset info and errors, and asset registry state
+      const allAssets = cosmosAssets.getAllAssets();
+      logDiv.innerHTML = `Scene: <b>${engine.state.sceneId}</b> | Position: <b>${engine.state.position}</b><br>${assetInfo}` +
+        `<br><span style='color:#aaa'>Registered assets: ${allAssets.length ? allAssets.map(a => a.type+':'+a.name).join(', ') : 'None'}</span>`;
+      if (engine.state.error) {
+        logDiv.innerHTML += `<br><span style='color:#ff6a6a'>Error: ${engine.state.error}</span>`;
+        logDebug('Engine error:', engine.state.error);
+      }
+      // Show full debug info
+      debugDiv.textContent =
+        'Current node: ' + JSON.stringify(node, null, 2) + '\n' +
+        'Engine state: ' + JSON.stringify(engine.state, null, 2) + '\n' +
+        'Asset registry: ' + JSON.stringify(allAssets, null, 2);
+    }
+    document.getElementById('nextBtn').onclick = () => {
+      history.push(JSON.parse(JSON.stringify(engine.state)));
+      try {
+        engine.advanceOne();
+      } catch (e) {
+        logDebug('Error advancing engine:', e);
+      }
+      render();
+    };
+    document.getElementById('prevBtn').onclick = () => {
+      if (history.length > 0) {
+        const prev = history.pop();
+        engine.state = JSON.parse(JSON.stringify(prev));
+        logDebug('Reverted to previous state:', prev);
+        render();
+      }
+    };
+    render();
+  </script>
+</body>
+</html> 

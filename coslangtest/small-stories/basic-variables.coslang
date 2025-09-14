@@ -1,0 +1,40 @@
+title: "Basic Variables Test"
+author: "Test Suite"
+version: "1.0.0"
+
+vars {
+    player_name = "Tester"
+    health = 100
+    score = 0
+    has_item = false
+}
+
+stats {
+    strength = 10
+    speed = 5
+}
+
+inventory {
+    coins = 25
+    potions = 3
+}
+
+scene start {
+    text: "Welcome {player_name}!"
+    text: "Health: {health}, Score: {score}"
+    text: "Strength: {strength}, Speed: {speed}"
+    text: "You have {coins} coins and {potions} potions."
+    
+    set score = score + 10
+    set health = health - 5
+    set coins = coins + 5
+    
+    text: "Updated - Health: {health}, Score: {score}, Coins: {coins}"
+    
+    choice "Test complete" -> end
+}
+
+scene end {
+    text: "Variable test completed successfully!"
+    text: "Final stats: Health {health}, Score {score}, Coins {coins}"
+}

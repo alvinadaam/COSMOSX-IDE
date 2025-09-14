@@ -1,0 +1,46 @@
+title: "Simple Choices Test"
+author: "Test Suite"
+version: "1.0.0"
+
+vars {
+    choice_made = "none"
+    path_taken = 0
+}
+
+scene start {
+    text: "You stand at a crossroads."
+    text: "Which path do you choose?"
+    
+    choice "Go left" -> left_path
+    choice "Go right" -> right_path
+    choice "Go straight" -> straight_path
+}
+
+scene left_path {
+    text: "You chose the left path."
+    set choice_made = "left"
+    set path_taken = 1
+    text: "Choice recorded: {choice_made}"
+    choice "Continue" -> end
+}
+
+scene right_path {
+    text: "You chose the right path."
+    set choice_made = "right"
+    set path_taken = 2
+    text: "Choice recorded: {choice_made}"
+    choice "Continue" -> end
+}
+
+scene straight_path {
+    text: "You chose to go straight."
+    set choice_made = "straight"
+    set path_taken = 3
+    text: "Choice recorded: {choice_made}"
+    choice "Continue" -> end
+}
+
+scene end {
+    text: "Journey complete!"
+    text: "You chose: {choice_made} (Path #{path_taken})"
+}

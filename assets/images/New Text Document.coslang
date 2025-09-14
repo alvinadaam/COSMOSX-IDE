@@ -1,0 +1,422 @@
+title: "Fantasy Quest: The Dragon's Heart"
+author: "Master Storyteller"
+version: "1.0"
+
+# === GLOBAL STATE ===
+set player_name = "Valen"
+set health = 100
+set gold = 50
+set reputation = 0
+set dragon_awake = true
+set has_sword = true
+set has_map = true
+set has_shield = false
+set potion_count = 0
+set companion = "none"
+set dragon_heart = false
+
+# === ACHIEVEMENTS ===
+# Achievement: dragon_slayer
+# Name: Dragon Slayer
+# Description: Defeated the mighty dragon Ignis
+
+# Achievement: master_negotiator
+# Name: Master Negotiator
+# Description: Resolved conflict without violence
+
+# === MACROS ===
+MACRO take_damage(amount) {
+    set health = health - {amount}
+    [LOG: "You took {amount} damage! Current health: {health}"]
+    if health <= 0 {
+        -> game_over
+    }
+}
+
+MACRO heal(amount) {
+    set health = min(health + {amount}, 100)
+    [LOG: "Healed for {amount} points! Current health: {health}"]
+}
+
+MACRO roll_dice(sides) {
+    set roll = random(1, {sides})
+    [LOG: "Rolled d{sides}: {roll}"]
+    return roll
+}
+
+# === SCENES ===
+scene start {
+    text: "The kingdom of Eldoria is in peril! The ancient dragon Ignis has awakened. As {player_name}, the kingdom's greatest adventurer, you've been tasked with retrieving the Dragon's Heart gem - the only artifact that can stop the beast."
+    
+    text: "You stand in the castle courtyard with 50 gold pieces and your trusted sword. Where will you begin your quest?"
+    
+    choice "Visit the marketplace" -> marketplace
+    choice "Go to the tavern" -> tavern
+    choice "Research in the royal library" -> library
+}
+
+scene marketplace {
+    text: "The bustling marketplace is filled with merchants hawking their wares. You see:"
+    
+    if gold >= 30 && has_shield == false {
+        text: "1. Dragon-scale shield (30 gold)"
+    }
+    
+    if gold >= 15 {
+        text: "2. Healing potion (15 gold)"
+    }
+    
+    text: "3. Leave marketplace"
+    
+    choice "Buy shield" if gold >= 30 && has_shield == false -> buy_shield
+    choice "Buy potion" if gold >= 15 -> buy_potion
+    choice "Leave" -> after_market
+}
+
+scene buy_shield {
+    set gold = gold - 30
+    set has_shield = true
+    [LOG: "Bought dragon-scale shield!"]
+    text: "You purchase the gleaming dragon-scale shield. It feels incredibly light yet strong."
+    choice "Continue" -> after_market
+}
+
+scene buy_potion {
+    set gold = gold - 15
+    set potion_count = potion_count + 1
+    [LOG: "Bought healing potion! Total: {potion_count}"]
+    text: "You add a healing potion to your inventory."
+    choice "Continue" -> marketplace
+}
+
+scene after_market {
+    text: "You leave the marketplace better equipped for your journey."
+    choice "Head to the Dragon Peaks" -> mountains
+}
+
+scene tavern {
+    text: "The 'Sleeping Griffin' tavern is filled with adventurers. In the corner, you spot:"
+    text: "1. A grizzled ranger nursing an ale"
+    text: "2. A mysterious hooded figure"
+    text: "3. The bartender"
+    
+    choice "Talk to the ranger" -> ranger
+    choice "Approach the hooded figure" -> hooded_figure
+    choice "Speak to bartender" -> bartender
+}
+
+scene ranger {
+    if reputation >= 20 {
+        text: "'Ah {player_name}! I've heard of your exploits. I'll join your quest.'"
+        set companion = "ranger"
+        [ACHIEVEMENT:companion_earned]
+        [LOG: "Ranger joined your party!"]
+    } else {
+        text: "'You look green, pup. Come back when you've proven yourself.'"
+    }
+    choice "Continue" -> tavern
+}
+
+scene hooded_figure {
+    [ROLL d20]
+    if roll >= 15 {
+        text: "The figure reveals herself as a dragon scholar. 'I can help you understand Ignis' weaknesses.'"
+        set companion = "scholar"
+        [ACHIEVEMENT:companion_earned]
+        [LOG: "Dragon scholar joined your party!"]
+    } else {
+        text: "'I have no business with you.' The figure turns away."
+    }
+    choice "Continue" -> tavern
+}
+
+scene bartender {
+    text: "'For 20 gold, I'll tell you a secret path to the dragon's lair.'"
+    
+    if gold >= 20 {
+        choice "Pay for information" -> buy_info
+    }
+    choice "Decline" -> tavern
+}
+
+scene buy_info {
+    set gold = gold - 20
+    set has_secret_path = true
+    [LOG: "Learned secret path to dragon's lair!"]
+    text: "'Take the western pass - it's guarded but shorter.'"
+    choice "Continue" -> mountains
+}
+
+scene library {
+    text: "The royal library contains ancient tomes about dragons. You research:"
+    text: "1. Dragon combat techniques"
+    text: "2. Ignis' history"
+    text: "3. The Dragon's Heart"
+    
+    choice "Study combat" -> combat_knowledge
+    choice "Study history" -> history_knowledge
+    choice "Study the artifact" -> artifact_knowledge
+}
+
+scene combat_knowledge {
+    set dragon_combat_bonus = 5
+    [LOG: "Gained +5 bonus against dragons!"]
+    text: "You learn about dragon anatomy and fighting techniques."
+    choice "Continue" -> mountains
+}
+
+scene history_knowledge {
+    set knows_dragon_history = true
+    [LOG: "Learned Ignis' history!"]
+    text: "You discover Ignis was once a guardian, not a destroyer."
+    choice "Continue" -> mountains
+}
+
+scene artifact_knowledge {
+    set knows_heart_power = true
+    [LOG: "Learned Dragon's Heart secrets!"]
+    text: "The texts reveal the Heart can control dragons or destroy them."
+    choice "Continue" -> mountains
+}
+
+scene mountains {
+    text: "The treacherous Dragon Peaks loom before you. The path splits:"
+    
+    if has_secret_path {
+        text: "1. Take the secret western pass (shorter but dangerous)"
+    }
+    
+    text: "2. Take the main eastern path (longer but safer)"
+    text: "3. Camp for the night"
+    
+    choice "Western pass" if has_secret_path -> western_pass
+    choice "Eastern path" -> eastern_path
+    choice "Make camp" -> camp
+}
+
+scene western_pass {
+    text: "As you enter the narrow pass, boulders crash down!"
+    [ROLL d20]
+    
+    if roll >= 10 {
+        if has_shield {
+            text: "You raise your shield just in time! The boulders glance off harmlessly."
+            [LOG: "Shield saved you!"]
+        } else {
+            text: "You dive aside, taking minor scrapes."
+            [take_damage(15)]
+        }
+        choice "Continue" -> dragon_lair_entrance
+    } else {
+        text: "A massive boulder pins your leg!"
+        [take_damage(30)]
+        choice "Try to free yourself" -> free_self
+    }
+}
+
+scene free_self {
+    [ROLL d20]
+    
+    if roll >= 12 {
+        text: "With tremendous effort, you free yourself!"
+        choice "Continue" -> dragon_lair_entrance
+    } else {
+        if companion == "ranger" {
+            text: "Your companion pulls you free just in time!"
+            choice "Continue" -> dragon_lair_entrance
+        } else {
+            text: "Trapped and injured, your quest ends here."
+            -> game_over
+        }
+    }
+}
+
+scene dragon_lair_entrance {
+    text: "You stand before the enormous cave entrance. Heat pulses from within."
+    
+    if knows_dragon_history {
+        text: "Remembering your research, you recall Ignis was once noble."
+    }
+    
+    choice "Enter the lair" -> dragon_lair
+    choice "Drink potion" if potion_count > 0 -> use_potion
+}
+
+scene use_potion {
+    set potion_count = potion_count - 1
+    [heal(30)]
+    [LOG: "Used potion! Remaining: {potion_count}"]
+    choice "Enter lair" -> dragon_lair
+}
+
+scene dragon_lair {
+    text: "Ignis the dragon towers before you, guarding the glowing Dragon's Heart gem!"
+    
+    if knows_dragon_history {
+        choice "Try to reason with Ignis" -> negotiate
+    }
+    
+    choice "Fight the dragon" -> dragon_fight
+    choice "Attempt to steal the gem" -> steal_attempt
+}
+
+scene negotiate {
+    [ROLL d20]
+    
+    if roll >= 18 || companion == "scholar" {
+        text: "'You remember my true purpose?' Ignis rumbles. 'The humans forgot our pact.'"
+        text: "You explain the kingdom still honors the ancient alliance. Ignis nods solemnly."
+        text: "'Take the Heart. Use it to restore balance.'"
+        set dragon_heart = true
+        [ACHIEVEMENT:master_negotiator]
+        -> good_ending
+    } else {
+        text: "Your words only anger Ignis further!"
+        [take_damage(20)]
+        choice "Fight" -> dragon_fight
+    }
+}
+
+scene dragon_fight {
+    text: "COMBAT BEGINS! Roll for initiative:"
+    [ROLL d20]
+    
+    set player_initiative = roll
+    set dragon_initiative = random(1, 20)
+    
+    if player_initiative > dragon_initiative {
+        text: "You strike first!"
+        choice "Attack" -> player_attack
+    } else {
+        text: "Ignis breathes fire!"
+        -> dragon_attack
+    }
+}
+
+scene player_attack {
+    [ROLL d20]
+    set attack_roll = roll
+    
+    if attack_roll >= 12 {
+        set damage = random(10, 25)
+        if dragon_combat_bonus {
+            set damage = damage + dragon_combat_bonus
+        }
+        text: "Your strike hits! Dealt {damage} damage."
+        set dragon_health = dragon_health - damage
+    } else {
+        text: "Your attack misses!"
+    }
+    
+    if dragon_health <= 0 {
+        [ACHIEVEMENT:dragon_slayer]
+        -> victory_ending
+    }
+    
+    choice "Continue" -> dragon_attack
+}
+
+scene dragon_attack {
+    [ROLL d20]
+    
+    if roll >= 15 {
+        text: "Dragon's fire breath engulfs you!"
+        [take_damage(35)]
+    } else {
+        text: "You dodge the dragon's attack!"
+    }
+    
+    choice "Attack" -> player_attack
+    choice "Use potion" if potion_count > 0 -> combat_potion
+}
+
+scene combat_potion {
+    set potion_count = potion_count - 1
+    [heal(30)]
+    [LOG: "Used potion in combat! Remaining: {potion_count}"]
+    choice "Continue" -> dragon_attack
+}
+
+scene steal_attempt {
+    [ROLL d20]
+    
+    if roll >= 20 {
+        text: "You miraculously snatch the gem without alerting Ignis!"
+        set dragon_heart = true
+        -> escape_sequence
+    } elif roll >= 15 {
+        text: "Ignis notices but you manage to grab the gem!"
+        set dragon_heart = true
+        [take_damage(20)]
+        -> escape_sequence
+    } else {
+        text: "Ignis catches you! The dragon is enraged."
+        [take_damage(40)]
+        choice "Fight" -> dragon_fight
+    }
+}
+
+scene escape_sequence {
+    text: "With the Dragon's Heart in hand, you flee the lair!"
+    [ROLL d20]
+    
+    if roll >= 10 {
+        text: "You escape successfully!"
+        -> good_ending
+    } else {
+        text: "Ignis pursues you through the mountains!"
+        choice "Run" -> mountain_chase
+    }
+}
+
+scene mountain_chase {
+    [ROLL d20]
+    
+    if roll >= 15 {
+        text: "You find a narrow cave to hide in until Ignis passes."
+        -> good_ending
+    } else {
+        text: "Ignis corners you on a cliff edge!"
+        choice "Fight" -> dragon_fight
+        choice "Try to reason" -> negotiate
+    }
+}
+
+# === ENDINGS ===
+scene good_ending {
+    text: "You return to Eldoria with the Dragon's Heart! The kingdom celebrates you as a hero."
+    text: "Ignis returns to peaceful slumber, balance restored to the realm."
+    
+    if companion != "none" {
+        text: "Your companion {companion} stands proudly by your side."
+    }
+    
+    text: "THE END - Kingdom Saved"
+    choice "Play again" -> start
+}
+
+scene victory_ending {
+    text: "Ignis lies defeated! You retrieve the Dragon's Heart from the fallen dragon."
+    text: "Though victorious, you wonder if there could have been another way..."
+    
+    if companion != "none" {
+        text: "Your companion {companion} helps you carry the gem home."
+    }
+    
+    text: "THE END - Dragon Slayer"
+    choice "Play again" -> start
+}
+
+scene game_over {
+    text: "Your quest ends here. The kingdom falls to Ignis' wrath."
+    text: "GAME OVER"
+    choice "Try again" -> start
+}
+
+# === EVENTS ===
+[onEvent 'dragon_awakened' {
+    text: "A thunderous roar echoes across the land! The dragon is awake."
+    [LOG: "Ignis has awakened!"]
+}]
+
+[triggerEvent 'dragon_awakened'] # Triggered at game start

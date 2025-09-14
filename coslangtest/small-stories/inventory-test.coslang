@@ -1,0 +1,41 @@
+title: "Inventory System Test"
+author: "Test Suite"
+version: "1.0.0"
+
+inventory {
+    sword = 0
+    potion = 5
+    key = 1
+    gold = 100
+}
+
+scene start {
+    text: "Testing inventory system..."
+    text: "Starting inventory:"
+    text: "Swords: {sword}, Potions: {potion}, Keys: {key}, Gold: {gold}"
+    
+    text: "Finding a sword..."
+    set sword = sword + 1
+    text: "Sword found! Swords: {sword}"
+    
+    text: "Using a potion..."
+    if potion > 0 {
+        set potion = potion - 1
+        text: "Potion used! Remaining: {potion}"
+    } else {
+        text: "No potions to use!"
+    }
+    
+    text: "Spending gold..."
+    set gold = gold - 25
+    text: "Spent 25 gold. Remaining: {gold}"
+    
+    text: "Final inventory:"
+    text: "Swords: {sword}, Potions: {potion}, Keys: {key}, Gold: {gold}"
+    
+    choice "Test complete" -> end
+}
+
+scene end {
+    text: "Inventory test completed!"
+}

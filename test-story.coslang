@@ -1,0 +1,303 @@
+title: "The Cosmic Adventure"
+author: "COSMOSX IDE Test"
+version: "2.0.0"
+
+vars {
+    player_name = "Cosmic Explorer"
+    health = 100
+    gold = 50
+    score = 0
+    has_sword = false
+    has_key = false
+    visited_temple = false
+    defeated_guardian = false
+}
+
+stats {
+    strength = 5
+    agility = 3
+    intelligence = 4
+    charisma = 2
+}
+
+inventory {
+    sword = 0
+    potion = 2
+    key = 0
+    map = 1
+    gem = 0
+}
+
+scene start {
+    text: "Welcome to the Cosmic Adventure, {player_name}! You find yourself at the edge of a mysterious forest. Your health is {health} and you have {gold} gold coins."
+    text: "Your stats: Strength {strength}, Agility {agility}, Intelligence {intelligence}, Charisma {charisma}"
+    choice "Enter the forest" -> forest_entrance
+    choice "Check your inventory" -> inventory_check
+    choice "Rest and recover" -> rest_scene
+}
+
+scene forest_entrance {
+    text: "You step into the dense forest. Ancient trees tower above you, their branches creating a natural canopy. You hear strange sounds in the distance."
+    if has_sword {
+        text: "You feel confident with your sword at your side."
+        choice "Explore deeper into the forest" -> deep_forest
+        choice "Follow the mysterious sounds" -> mysterious_sounds
+    } else {
+        text: "You wish you had a weapon for protection."
+        choice "Search for a weapon" -> search_weapon
+        choice "Continue carefully" -> deep_forest
+    }
+    choice "Return to the entrance" -> start
+}
+
+scene search_weapon {
+    text: "You search the forest floor for anything that could serve as a weapon."
+    text: "You find a rusty but usable sword! Your strength increases."
+    set has_sword = true
+    set sword = 1
+    set strength = strength + 1
+    text: "You now have a sword and your strength is {strength}!"
+    choice "Continue exploring" -> deep_forest
+}
+
+scene deep_forest {
+    text: "The forest grows darker and more mysterious. You notice an ancient temple in the distance."
+    if has_sword {
+        text: "With your sword ready, you feel prepared for whatever lies ahead."
+    }
+    choice "Approach the temple" -> temple_approach
+    choice "Explore the surrounding area" -> forest_exploration
+    choice "Return to safer ground" -> forest_entrance
+}
+
+scene temple_approach {
+    text: "You approach the ancient temple. Its stone walls are covered in mysterious runes. A guardian stands at the entrance."
+    if has_sword and strength >= 6 {
+        text: "The guardian notices your sword and strong presence. They seem impressed."
+        choice "Challenge the guardian" -> guardian_challenge
+        choice "Try to negotiate" -> negotiate_guardian
+    } else {
+        text: "The guardian looks at you with suspicion. They seem to be testing your worthiness."
+        choice "Try to prove your worth" -> prove_worthiness
+        choice "Attempt to sneak past" -> sneak_past
+    }
+}
+
+scene guardian_challenge {
+    text: "You draw your sword and challenge the guardian to combat!"
+    text: "You defeat the guardian in an epic battle! Your combat skills have improved."
+    set defeated_guardian = true
+    set score = score + 100
+    set strength = strength + 1
+    text: "Score: {score}, Strength: {strength}"
+    choice "Enter the temple" -> temple_interior
+}
+
+scene negotiate_guardian {
+    text: "You attempt to negotiate with the guardian using your intelligence and charisma."
+    if intelligence >= 4 and charisma >= 3 {
+        text: "Your diplomatic approach works! The guardian allows you to pass."
+        set score = score + 50
+        choice "Enter the temple" -> temple_interior
+    } else {
+        text: "The guardian is not convinced by your arguments."
+        choice "Try a different approach" -> temple_approach
+    }
+}
+
+scene prove_worthiness {
+    text: "The guardian asks you to solve a riddle to prove your worthiness."
+    text: "What has keys, but no locks; space, but no room; and you can enter, but not go in?"
+    choice "A keyboard" -> riddle_correct
+    choice "A map" -> riddle_incorrect
+    choice "A book" -> riddle_incorrect
+}
+
+scene riddle_correct {
+    text: "Correct! The guardian is impressed by your intelligence."
+    set score = score + 75
+    set intelligence = intelligence + 1
+    text: "Score: {score}, Intelligence: {intelligence}"
+    choice "Enter the temple" -> temple_interior
+}
+
+scene riddle_incorrect {
+    text: "Incorrect. The guardian shakes their head in disappointment."
+    choice "Try again" -> prove_worthiness
+    choice "Return to the forest" -> deep_forest
+}
+
+scene sneak_past {
+    text: "You attempt to sneak past the guardian using your agility."
+    if agility >= 4 {
+        text: "You successfully sneak past the guardian! Your stealth skills are impressive."
+        set score = score + 60
+        set agility = agility + 1
+        text: "Score: {score}, Agility: {agility}"
+        choice "Enter the temple" -> temple_interior
+    } else {
+        text: "The guardian catches you! You're forced to retreat."
+        set health = health - 15
+        text: "Health: {health}"
+        choice "Return to the forest" -> deep_forest
+    }
+}
+
+scene temple_interior {
+    text: "You enter the ancient temple. The air is thick with magic and mystery. Ancient artifacts line the walls."
+    set visited_temple = true
+    text: "You notice a locked door and a pedestal with a glowing gem."
+    if has_key {
+        text: "You have a key that might unlock the door."
+        choice "Use the key on the door" -> secret_chamber
+        choice "Examine the gem" -> examine_gem
+    } else {
+        text: "You need a key to unlock the door."
+        choice "Search for a key" -> search_key
+        choice "Examine the gem" -> examine_gem
+    }
+    choice "Explore the temple further" -> temple_exploration
+}
+
+scene search_key {
+    text: "You search the temple for a key."
+    text: "You find a mysterious key hidden behind a loose stone!"
+    set has_key = true
+    set key = 1
+    text: "You now have a key!"
+    choice "Use the key on the door" -> secret_chamber
+}
+
+scene secret_chamber {
+    text: "The key fits perfectly! You unlock the door and enter a secret chamber."
+    text: "Inside, you find a treasure chest and ancient scrolls."
+    choice "Open the treasure chest" -> treasure_chest
+    choice "Read the ancient scrolls" -> read_scrolls
+    choice "Take everything" -> take_all_treasure
+}
+
+scene treasure_chest {
+    text: "You open the treasure chest and find valuable items!"
+    set gold = gold + 100
+    set gem = gem + 2
+    set score = score + 200
+    text: "You found 100 gold coins and 2 precious gems! Gold: {gold}, Gems: {gem}, Score: {score}"
+    choice "Read the ancient scrolls" -> read_scrolls
+    choice "Leave the chamber" -> temple_interior
+}
+
+scene read_scrolls {
+    text: "You read the ancient scrolls and learn powerful knowledge!"
+    set intelligence = intelligence + 2
+    set score = score + 150
+    text: "Your intelligence has increased significantly! Intelligence: {intelligence}, Score: {score}"
+    choice "Open the treasure chest" -> treasure_chest
+    choice "Leave the chamber" -> temple_interior
+}
+
+scene take_all_treasure {
+    text: "You take everything from the secret chamber!"
+    set gold = gold + 100
+    set gem = gem + 2
+    set intelligence = intelligence + 2
+    set score = score + 350
+    text: "You've gained: 100 gold, 2 gems, +2 intelligence! Gold: {gold}, Gems: {gem}, Intelligence: {intelligence}, Score: {score}"
+    choice "Leave the chamber" -> temple_interior
+}
+
+scene examine_gem {
+    text: "You examine the glowing gem on the pedestal. It seems to pulse with ancient energy."
+    if intelligence >= 6 {
+        text: "Your high intelligence allows you to understand the gem's power. It's a magical artifact!"
+        set score = score + 100
+        choice "Take the gem" -> take_gem
+        choice "Leave it alone" -> temple_interior
+    } else {
+        text: "The gem is mysterious, but you can't understand its purpose."
+        choice "Take the gem anyway" -> take_gem
+        choice "Leave it alone" -> temple_interior
+    }
+}
+
+scene take_gem {
+    text: "You carefully take the glowing gem from the pedestal."
+    set gem = gem + 1
+    set score = score + 50
+    text: "You now have {gem} gems and your score is {score}!"
+    choice "Explore the temple further" -> temple_exploration
+    choice "Return to the forest" -> deep_forest
+}
+
+scene temple_exploration {
+    text: "You explore more of the temple and discover ancient murals telling stories of cosmic adventures."
+    set score = score + 25
+    text: "Score: {score}"
+    choice "Return to the main chamber" -> temple_interior
+    choice "Exit the temple" -> deep_forest
+}
+
+scene mysterious_sounds {
+    text: "You follow the mysterious sounds and discover a hidden grove with a magical fountain."
+    text: "The fountain's water seems to have healing properties."
+    choice "Drink from the fountain" -> drink_fountain
+    choice "Investigate the grove" -> investigate_grove
+    choice "Return to the forest" -> forest_entrance
+}
+
+scene drink_fountain {
+    text: "You drink from the magical fountain. You feel rejuvenated!"
+    set health = 100
+    set score = score + 30
+    text: "Your health is fully restored! Health: {health}, Score: {score}"
+    choice "Investigate the grove" -> investigate_grove
+    choice "Return to the forest" -> forest_entrance
+}
+
+scene investigate_grove {
+    text: "You investigate the grove and find a hidden cache with useful items."
+    set potion = potion + 1
+    set gold = gold + 25
+    set score = score + 40
+    text: "You found a health potion and 25 gold! Potions: {potion}, Gold: {gold}, Score: {score}"
+    choice "Return to the forest" -> forest_entrance
+}
+
+scene inventory_check {
+    text: "Your current inventory:"
+    if sword > 0 {
+        text: "⚔️ Sword: {sword}"
+    }
+    if potion > 0 {
+        text: "🧪 Health Potions: {potion}"
+    }
+    if key > 0 {
+        text: "🗝️ Keys: {key}"
+    }
+    if map > 0 {
+        text: "🗺️ Map: {map}"
+    }
+    if gem > 0 {
+        text: "💎 Gems: {gem}"
+    }
+    text: "💰 Gold: {gold}"
+    text: "🏆 Score: {score}"
+    choice "Return to adventure" -> start
+}
+
+scene rest_scene {
+    text: "You find a safe spot and rest for a while."
+    set health = health + 20
+    if health > 100 {
+        set health = 100
+    }
+    text: "You feel refreshed! Health: {health}"
+    choice "Continue your adventure" -> start
+}
+
+scene forest_exploration {
+    text: "You explore the forest around the temple and find a small clearing."
+    text: "You discover a hidden path that leads to a shortcut!"
+    set score = score + 20
+    choice "Take the shortcut" -> temple_approach
+    choice "Return to the forest entrance" -> forest_entrance
+} 

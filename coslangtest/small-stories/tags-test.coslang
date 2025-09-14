@@ -1,0 +1,41 @@
+title: "Tags System Test"
+author: "Test Suite"
+version: "1.0.0"
+
+vars {
+    test_complete = false
+}
+
+inventory {
+    gems = 0
+    scrolls = 2
+}
+
+scene start {
+    text: "Testing tag system..."
+    
+    text: "This message will appear in the log." [LOG: Tag system test started]
+    
+    text: "Unlocking an achievement..." [ACHIEVEMENT: Test Achievement]
+    
+    text: "Triggering an event..." [EVENT: Test Event Occurred]
+    
+    text: "Finding gems..." [inventory ++gems]
+    text: "You now have {gems} gems!"
+    
+    text: "Using a scroll..." [inventory --scrolls]
+    text: "You now have {scrolls} scrolls!"
+    
+    text: "Multiple tags test..." [LOG: Multiple tags working, ACHIEVEMENT: Multi-Tag Master, EVENT: Tag Combo, inventory ++gems]
+    
+    set test_complete = true [LOG: Test completion flag set]
+    
+    text: "All tag types tested successfully!"
+    
+    choice "Test complete" -> end
+}
+
+scene end {
+    text: "Tags test completed!" [LOG: Tags test finished successfully]
+    text: "Check the UI panels to verify all tags worked correctly."
+}

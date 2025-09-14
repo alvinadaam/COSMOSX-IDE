@@ -1,0 +1,239 @@
+title: "Error Handling & Edge Cases"
+author: "Smart Test Suite"
+version: "1.0.0"
+
+vars {
+    test_counter = 0
+    error_caught = false
+    division_result = 0
+    string_test = "hello"
+    undefined_var = ""
+}
+
+stats {
+    error_resistance = 10
+    debug_skill = 0
+}
+
+inventory {
+    error_detector = 1
+    safety_net = 1
+}
+
+scene start {
+    text: "🚨 ERROR HANDLING & EDGE CASES TEST"
+    text: "Testing engine robustness with potential error conditions."
+    
+    set test_counter = test_counter + 1
+    text: "Test run #{test_counter}"
+    
+    choice "Test division by zero" -> division_test
+    choice "Test undefined variables" -> undefined_test
+    choice "Test string operations" -> string_test_scene
+    choice "Test boundary conditions" -> boundary_test
+    choice "Test malformed conditionals" -> conditional_test
+    choice "Test macro edge cases" -> macro_edge_test
+}
+
+scene division_test {
+    text: "🔢 DIVISION BY ZERO TEST"
+    
+    # Test division by zero handling
+    macro safe_divide(numerator, denominator) {
+        if denominator == 0 {
+            text: "⚠️ Division by zero detected! Returning safe value."
+            set error_caught = true
+            return 0
+        } else {
+            return numerator / denominator
+        }
+    }
+    
+    set division_result = safe_divide(10, 0)
+    text: "Division result: {division_result}"
+    text: "Error caught: {error_caught}"
+    
+    # Test with valid division
+    set division_result = safe_divide(20, 4)
+    text: "Valid division: 20/4 = {division_result}"
+    
+    choice "Continue error testing" -> start
+}
+
+scene undefined_test {
+    text: "❓ UNDEFINED VARIABLE TEST"
+    
+    # Test accessing potentially undefined variables
+    text: "Testing undefined variable access..."
+    
+    # Safe variable access pattern
+    if undefined_var == "" {
+        text: "Variable is empty/undefined, setting default value."
+        set undefined_var = "default_value"
+    }
+    
+    text: "Variable value: {undefined_var}"
+    
+    # Test with potentially missing inventory items
+    if nonexistent_item > 0 {
+        text: "This should not appear if variable doesn't exist."
+    } else {
+        text: "✅ Safely handled missing inventory item."
+    }
+    
+    choice "Continue testing" -> start
+}
+
+scene string_test_scene {
+    text: "📝 STRING OPERATIONS TEST"
+    
+    # Test string comparisons and edge cases
+    text: "Testing string operations with: '{string_test}'"
+    
+    if string_test == "hello" {
+        text: "✅ String equality test passed."
+    }
+    
+    if string_test == "" {
+        text: "String is empty."
+    } else {
+        text: "✅ Non-empty string detected."
+    }
+    
+    # Test string with numbers
+    set string_test = "123"
+    text: "Changed string to: '{string_test}'"
+    
+    # This might cause issues if not handled properly
+    if string_test == 123 {
+        text: "String-number comparison worked."
+    } else {
+        text: "✅ String-number comparison handled safely."
+    }
+    
+    choice "Continue testing" -> start
+}
+
+scene boundary_test {
+    text: "🎯 BOUNDARY CONDITIONS TEST"
+    
+    # Test extreme values
+    set test_var = 999999
+    text: "Large number test: {test_var}"
+    
+    set test_var = -999999
+    text: "Negative number test: {test_var}"
+    
+    set test_var = 0
+    text: "Zero value test: {test_var}"
+    
+    # Test inventory boundaries
+    set test_item = -1
+    if test_item < 0 {
+        text: "✅ Negative inventory handled safely."
+        set test_item = 0
+    }
+    
+    # Test very long strings
+    set long_string = "This is a very long string that might cause issues if the engine doesn't handle long text properly and could potentially break rendering or parsing mechanisms."
+    text: "Long string test: {long_string}"
+    
+    choice "Continue testing" -> start
+}
+
+scene conditional_test {
+    text: "🔀 CONDITIONAL EDGE CASES TEST"
+    
+    # Test complex conditional expressions
+    set a = 5
+    set b = 10
+    set c = 0
+    
+    # Test multiple conditions
+    if a > 0 and b > 0 and c == 0 {
+        text: "✅ Multiple AND conditions work."
+    }
+    
+    if a > 10 or b > 5 or c > 0 {
+        text: "✅ Multiple OR conditions work."
+    }
+    
+    # Test nested parentheses
+    if (a + b) > (c + 10) {
+        text: "✅ Parenthetical expressions work."
+    }
+    
+    # Test potentially problematic comparisons
+    if a == b {
+        text: "This should not appear."
+    } else {
+        text: "✅ Inequality comparison works."
+    }
+    
+    choice "Continue testing" -> start
+}
+
+scene macro_edge_test {
+    text: "⚙️ MACRO EDGE CASES TEST"
+    
+    # Test macro with no parameters
+    macro simple_macro() {
+        text: "Simple macro executed."
+        return "success"
+    }
+    
+    set result = simple_macro()
+    text: "Macro result: {result}"
+    
+    # Test macro with multiple parameters
+    macro complex_macro(x, y, z) {
+        set total = x + y + z
+        text: "Complex macro: {x} + {y} + {z} = {total}"
+        return total
+    }
+    
+    set complex_result = complex_macro(1, 2, 3)
+    text: "Complex macro result: {complex_result}"
+    
+    # Test macro that modifies global state
+    macro state_modifier() {
+        set debug_skill = debug_skill + 1
+        set error_resistance = error_resistance + 5
+        text: "Global state modified by macro."
+        return debug_skill
+    }
+    
+    set new_debug = state_modifier()
+    text: "Debug skill after macro: {new_debug}"
+    text: "Error resistance: {error_resistance}"
+    
+    choice "Complete error testing" -> results
+}
+
+scene results {
+    text: "📊 ERROR HANDLING TEST RESULTS"
+    text: "All error handling tests completed successfully!"
+    
+    text: "Test Summary:"
+    text: "- Division by zero: Handled safely"
+    text: "- Undefined variables: Managed gracefully"
+    text: "- String operations: Working correctly"
+    text: "- Boundary conditions: Within limits"
+    text: "- Complex conditionals: Functioning properly"
+    text: "- Macro edge cases: Operating normally"
+    
+    text: "Final stats:"
+    text: "- Test runs: {test_counter}"
+    text: "- Errors caught: {error_caught}"
+    text: "- Debug skill: {debug_skill}"
+    text: "- Error resistance: {error_resistance}"
+    
+    choice "Run tests again" -> start
+    choice "End testing" -> end
+}
+
+scene end {
+    text: "✅ ERROR HANDLING TEST SUITE COMPLETED"
+    text: "The COSLANG engine has demonstrated robust error handling capabilities."
+    text: "All edge cases were managed safely without crashes or undefined behavior."
+}

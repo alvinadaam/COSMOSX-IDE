@@ -1,0 +1,56 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-labelledby="cosmosx-icon-title">
+  <title id="cosmosx-icon-title">COSMOSX IDE</title>
+  <defs>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4dabf7"/>
+      <stop offset="50%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <filter id="iconGlow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur"/>
+      <feFlood flood-color="#c084fc" result="glowColor"/>
+      <feComposite in="glowColor" in2="blur" operator="in" result="softGlow"/>
+      <feMerge>
+        <feMergeNode in="softGlow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Central star -->
+  <circle cx="16" cy="16" r="7" fill="url(#iconGradient)" filter="url(#iconGlow)"/>
+  <circle cx="16" cy="16" r="4" fill="white"/>
+  
+  <!-- Story paths -->
+  <g stroke="url(#iconGradient)" stroke-width="1" stroke-linecap="round">
+    <line x1="16" y1="16" x2="24" y2="8"/>
+    <line x1="16" y1="16" x2="22" y2="22"/>
+    <line x1="16" y1="16" x2="8" y2="20"/>
+    <line x1="16" y1="16" x2="10" y2="6"/>
+  </g>
+  
+  <!-- Branch nodes -->
+  <circle cx="24" cy="8" r="3" fill="#4dabf7" class="node-pulse" style="--i:0"/>
+  <circle cx="22" cy="22" r="3" fill="#7c3aed" class="node-pulse" style="--i:1"/>
+  <circle cx="8" cy="20" r="3" fill="#ec4899" class="node-pulse" style="--i:2"/>
+  <circle cx="10" cy="6" r="3" fill="#10b981" class="node-pulse" style="--i:3"/>
+  
+  <!-- Code brackets -->
+  <g transform="translate(22, 10)" stroke="white" stroke-width="1.5">
+    <path d="M 0 0 L 3 0 L 3 12 L 0 12" fill="none"/>
+    <path d="M 6 0 L 9 0 L 9 12 L 6 12" fill="none"/>
+    <line x1="1.5" y1="6" x2="7.5" y2="6" stroke-dasharray="2,1.5"/>
+  </g>
+  
+  <style>
+    .node-pulse {
+      animation: pulse 2s infinite;
+      animation-delay: calc(var(--i) * 0.3s);
+    }
+    @keyframes pulse {
+      0% { r: 2.8; }
+      50% { r: 3.2; }
+      100% { r: 2.8; }
+    }
+  </style>
+</svg>

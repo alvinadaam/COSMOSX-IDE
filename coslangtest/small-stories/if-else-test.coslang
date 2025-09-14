@@ -1,0 +1,47 @@
+title: "If-Else Conditions Test"
+author: "Test Suite"
+version: "1.0.0"
+
+vars {
+    health = 75
+    has_sword = true
+    level = 3
+    gold = 50
+}
+
+scene start {
+    text: "Testing conditional logic..."
+    text: "Health: {health}, Level: {level}, Gold: {gold}"
+    text: "Has sword: {has_sword}"
+    
+    if health > 50 {
+        text: "✅ You are healthy!"
+    } else {
+        text: "❌ You need healing."
+    }
+    
+    if has_sword {
+        text: "✅ You are armed with a sword."
+        if level >= 3 {
+            text: "✅ You are experienced enough to wield it effectively."
+        } else {
+            text: "⚠️ You need more experience."
+        }
+    } else {
+        text: "❌ You are unarmed."
+    }
+    
+    if gold >= 100 {
+        text: "💰 You are wealthy!"
+    } else if gold >= 25 {
+        text: "💰 You have some money."
+    } else {
+        text: "💰 You are poor."
+    }
+    
+    choice "Test complete" -> end
+}
+
+scene end {
+    text: "Conditional logic test completed!"
+}

@@ -1,0 +1,649 @@
+title: "COSLANG Syntax Reference Guide"
+author: "COSMOSX IDE Documentation"
+version: "1.0.0"
+
+# This file demonstrates every COSLANG syntax feature with 100% accurate examples
+# Use this as a complete reference for COSLANG language specification
+
+# ===== METADATA BLOCK =====
+# Required at the top of every COSLANG file
+# title: "Story Title"
+# author: "Author Name"  
+# version: "1.0.0"
+
+# ===== COMMENTS =====
+# Single line comments start with #
+# Comments can appear anywhere in the file
+
+# ===== ASSETS BLOCK =====
+# Define reusable assets (images, audio, video) with settings
+assets {
+    image logo = "coslang-logo.png" { width: 200, height: 100 }
+    image background = "forest-bg.jpg" { opacity: 0.8, position: "center" }
+    audio theme = "theme-music.mp3" { volume: 0.7, loop: true }
+    audio sfx = "sword-clash.wav" { volume: 1.0, loop: false }
+    video intro = "game-intro.mp4" { autoplay: true, controls: false }
+}
+
+# ===== GLOBAL VARIABLES BLOCK =====
+# Define story-wide variables with initial values
+vars {
+    player_name = "Hero"
+    health = 100
+    max_health = 100
+    gold = 50
+    level = 1
+    experience = 0
+    has_sword = false
+    has_key = false
+    visited_temple = false
+    quest_complete = false
+    dialog_seen = false
+    enemy_defeated = false
+}
+
+# ===== GLOBAL STATS BLOCK =====
+# Define character statistics
+stats {
+    strength = 10
+    agility = 8
+    intelligence = 12
+    charisma = 6
+    luck = 5
+    defense = 7
+}
+
+# ===== GLOBAL INVENTORY BLOCK =====
+# Define inventory items with quantities
+inventory {
+    sword = 0
+    shield = 0
+    potion = 3
+    key = 0
+    gem = 0
+    map = 1
+    scroll = 0
+    gold_coin = 50
+}
+
+# ===== SCENE DEFINITIONS =====
+# Scenes are the main building blocks of COSLANG stories
+# Format: scene scene_name { content }
+
+scene syntax_demo {
+    # ===== SCENE-LEVEL VARIABLES =====
+    # Variables specific to this scene only
+    vars {
+        local_counter = 0
+        scene_visited = true
+    }
+    
+    # ===== SCENE-LEVEL STATS =====
+    # Stats specific to this scene
+    stats {
+        scene_bonus = 5
+    }
+    
+    # ===== SCENE-LEVEL INVENTORY =====
+    # Inventory items specific to this scene
+    inventory {
+        special_item = 1
+    }
+    
+    # ===== TEXT NODES =====
+    # Display text to the player
+    text: "Welcome to the COSLANG Syntax Reference!"
+    text: "This scene demonstrates every syntax feature."
+    
+    # Text with variable interpolation using {variable_name}
+    text: "Hello {player_name}! Your health is {health}/{max_health}."
+    text: "You have {gold} gold coins and your strength is {strength}."
+    
+    # Multi-line text (quoted strings)
+    text: "This is a multi-line text example.
+    It can span multiple lines and will preserve
+    the formatting exactly as written here."
+    
+    # Direct quoted text (alternative syntax)
+    "You can also write text directly in quotes like this."
+    
+    # ===== ASSET COMMANDS =====
+    # Show images, play audio, show video
+    show image logo
+    show image background
+    play audio theme
+    show video intro
+    
+    # ===== SET STATEMENTS =====
+    # Modify variables, stats, or inventory
+    set health = 95
+    set gold = gold + 25
+    set experience = experience + 100
+    set has_sword = true
+    set strength = strength + 2
+    set potion = potion - 1
+    
+    # Mathematical expressions in set statements
+    set level = experience / 100
+    set max_health = 100 + (level * 10)
+    set defense = strength / 2
+    
+    # ===== CONDITIONAL BLOCKS (IF/ELSE) =====
+    # Simple if condition
+    if has_sword {
+        text: "You grip your sword tightly."
+        set strength = strength + 5
+    }
+    
+    # If with else
+    if health > 50 {
+        text: "You feel strong and healthy."
+    } else {
+        text: "You feel weak and need healing."
+        set health = health + 10
+    }
+    
+    # Complex conditions with operators
+    if strength >= 15 and has_sword {
+        text: "You are a formidable warrior!"
+        set experience = experience + 50
+    } else if intelligence > 10 {
+        text: "Your wisdom guides you."
+    } else {
+        text: "You rely on luck."
+    }
+    
+    # Nested if statements
+    if gold > 25 {
+        if has_key {
+            text: "You have both gold and a key - perfect!"
+        } else {
+            text: "You have gold but need a key."
+        }
+    }
+    
+    # ===== MACRO DEFINITIONS =====
+    # Define reusable code blocks
+    macro heal_player(amount) {
+        set health = health + amount
+        if health > max_health {
+            set health = max_health
+        }
+        text: "You heal for {amount} points. Health: {health}/{max_health}"
+    }
+    
+    macro level_up() {
+        set level = level + 1
+        set max_health = max_health + 10
+        set health = max_health
+        set strength = strength + 2
+        text: "Level up! You are now level {level}!"
+    }
+    
+    macro give_item(item_name, quantity) {
+        text: "You receive {quantity} {item_name}!"
+    }
+    
+    # ===== MACRO CALLS =====
+    # Call macros with parameters
+    set health = heal_player(15)
+    set level = level_up()
+    
+    # ===== TAGS =====
+    # Tags provide metadata and trigger special behaviors
+    
+    # Log tags - add entries to the game log
+    text: "This is a logged message." [LOG: Player entered syntax demo scene]
+    
+    # Achievement tags - unlock achievements
+    set quest_complete = true [ACHIEVEMENT: Syntax Master]
+    
+    # Event tags - trigger story events
+    text: "A mysterious event occurs..." [EVENT: Strange Phenomenon]
+    
+    # Inventory tags - modify inventory directly
+    text: "You find a potion!" [inventory ++potion]
+    text: "You use a gem." [inventory --gem]
+    
+    # Multiple tags on one line
+    text: "Epic moment!" [LOG: Epic moment occurred, ACHIEVEMENT: Epic Player, EVENT: Epic Event]
+    
+    # ===== CHOICES =====
+    # Present options to the player
+    choice "Continue to advanced features" -> advanced_syntax
+    choice "Test conditional choices" -> conditional_choices
+    choice "Explore macro examples" -> macro_examples
+    choice "View inventory management" -> inventory_demo
+    choice "Return to start" -> syntax_demo
+}
+
+scene advanced_syntax {
+    text: "Advanced COSLANG Syntax Features"
+    
+    # ===== COMPLEX VARIABLE INTERPOLATION =====
+    text: "Player: {player_name} | Level: {level} | HP: {health}/{max_health}"
+    text: "Stats - STR: {strength}, AGI: {agility}, INT: {intelligence}"
+    text: "Gold: {gold} | Experience: {experience} | Next Level: {(level + 1) * 100}"
+    
+    # ===== ADVANCED CONDITIONALS =====
+    # Multiple conditions with logical operators
+    if (strength > 10 and agility > 5) or intelligence > 15 {
+        text: "You are well-balanced or very intelligent."
+    }
+    
+    # Numeric comparisons
+    if health >= max_health {
+        text: "You are at full health!"
+    } else if health >= max_health / 2 {
+        text: "You are moderately healthy."
+    } else {
+        text: "You need healing urgently!"
+    }
+    
+    # Boolean variable checks
+    if has_sword and not has_key {
+        text: "You have a weapon but no key."
+    }
+    
+    # ===== COMPLEX SET OPERATIONS =====
+    # Mathematical expressions
+    set experience = experience + (level * 25)
+    set gold = gold * 2
+    set health = health - (max_health / 10)
+    
+    # Conditional assignments
+    if health < 0 {
+        set health = 0
+    }
+    
+    if gold > 1000 {
+        set gold = 1000
+    }
+    
+    # ===== ADVANCED MACRO USAGE =====
+    macro calculate_damage(base_damage, strength_bonus) {
+        return base_damage + (strength_bonus * 2)
+    }
+    
+    macro apply_status_effect(effect_name, duration) {
+        text: "You are affected by {effect_name} for {duration} turns."
+        set status_effect = effect_name
+        set effect_duration = duration
+    }
+    
+    # Using macros in set statements
+    set player_damage = calculate_damage(10, strength)
+    
+    # ===== ASSET INTEGRATION =====
+    show image background
+    text: "The background image sets the mood."
+    
+    play audio sfx
+    text: "Sound effects enhance the experience."
+    
+    # ===== COMPLEX TAGS =====
+    text: "You discover an ancient artifact!" [LOG: Ancient artifact discovered, ACHIEVEMENT: Archaeologist, EVENT: Artifact Found, inventory ++artifact]
+    
+    choice "Test complex branching" -> complex_branching
+    choice "Return to main demo" -> syntax_demo
+}
+
+scene conditional_choices {
+    text: "Conditional Choice Demonstration"
+    text: "Choices can appear based on conditions."
+    
+    # Always available choice
+    choice "Basic choice (always available)" -> syntax_demo
+    
+    # Conditional choices based on variables
+    if has_sword {
+        choice "Attack with sword (requires sword)" -> combat_demo
+    }
+    
+    if gold >= 50 {
+        choice "Buy something (requires 50+ gold)" -> shop_demo
+    }
+    
+    if intelligence >= 12 {
+        choice "Use intelligence (requires 12+ INT)" -> puzzle_demo
+    }
+    
+    if has_key and visited_temple {
+        choice "Unlock secret door (requires key + temple visit)" -> secret_area
+    }
+    
+    # Multiple condition choice
+    if strength >= 15 and has_sword and health > 75 {
+        choice "Heroic action (requires high stats)" -> heroic_scene
+    }
+    
+    choice "Return to syntax demo" -> syntax_demo
+}
+
+scene macro_examples {
+    text: "Macro System Examples"
+    
+    # ===== UTILITY MACROS =====
+    macro clamp_health() {
+        if health > max_health {
+            set health = max_health
+        }
+        if health < 0 {
+            set health = 0
+        }
+    }
+    
+    macro gain_experience(amount) {
+        set experience = experience + amount
+        text: "You gain {amount} experience points!"
+        if experience >= (level * 100) {
+            set level = level + 1
+            set max_health = max_health + 10
+            text: "Level up! You are now level {level}!"
+        }
+    }
+    
+    macro random_encounter() {
+        text: "A random encounter occurs!"
+        set encounter_type = "goblin"
+        text: "You encounter a {encounter_type}!"
+    }
+    
+    # ===== COMBAT MACROS =====
+    macro attack_enemy(damage) {
+        text: "You attack for {damage} damage!"
+        set enemy_health = enemy_health - damage
+        if enemy_health <= 0 {
+            text: "Enemy defeated!"
+            set enemy_defeated = true
+            set experience = gain_experience(50)
+        }
+    }
+    
+    macro use_potion() {
+        if potion > 0 {
+            set potion = potion - 1
+            set health = health + 25
+            set health = clamp_health()
+            text: "You drink a potion and restore 25 health."
+        } else {
+            text: "You have no potions!"
+        }
+    }
+    
+    # ===== MACRO CALLS WITH DIFFERENT PARAMETERS =====
+    set experience = gain_experience(75)
+    set health = use_potion()
+    
+    # Set enemy for combat demo
+    set enemy_health = 30
+    set player_damage = 15
+    set enemy_damage = attack_enemy(player_damage)
+    
+    choice "Test more macros" -> macro_examples
+    choice "Return to syntax demo" -> syntax_demo
+}
+
+scene inventory_demo {
+    text: "Inventory Management Examples"
+    
+    # ===== INVENTORY OPERATIONS =====
+    text: "Current inventory:"
+    text: "Swords: {sword}, Potions: {potion}, Keys: {key}"
+    text: "Gems: {gem}, Maps: {map}, Scrolls: {scroll}"
+    
+    # Add items
+    set sword = sword + 1
+    set gem = gem + 3
+    text: "You found a sword and 3 gems!"
+    
+    # Remove items (with safety check)
+    if potion > 0 {
+        set potion = potion - 1
+        text: "You used a potion."
+    } else {
+        text: "No potions to use!"
+    }
+    
+    # ===== INVENTORY-BASED CONDITIONALS =====
+    if sword > 0 {
+        text: "You are armed with a sword."
+        if shield > 0 {
+            text: "You also have a shield for protection."
+        }
+    }
+    
+    if potion >= 3 {
+        text: "You have plenty of potions."
+    } else if potion > 0 {
+        text: "You have some potions left."
+    } else {
+        text: "You're out of potions!"
+    }
+    
+    # ===== INVENTORY TAGS =====
+    text: "You discover treasure!" [inventory ++gem, inventory ++gold_coin]
+    text: "You lose some items in the struggle." [inventory --potion]
+    
+    # ===== INVENTORY MACROS =====
+    macro add_loot(item_type, quantity) {
+        text: "You found {quantity} {item_type}!"
+        # Note: This would need dynamic inventory modification in a real implementation
+    }
+    
+    macro check_inventory_space() {
+        # Calculate total items
+        set total_items = sword + potion + key + gem + map + scroll
+        if total_items > 20 {
+            text: "Your inventory is getting full!"
+        }
+    }
+    
+    set inventory_check = check_inventory_space()
+    
+    choice "Continue inventory testing" -> inventory_demo
+    choice "Return to syntax demo" -> syntax_demo
+}
+
+scene complex_branching {
+    text: "Complex Branching Scenario"
+    
+    # ===== NESTED CONDITIONS WITH MULTIPLE PATHS =====
+    if level >= 5 {
+        text: "You are an experienced adventurer."
+        
+        if has_sword and strength >= 15 {
+            text: "Your combat prowess is legendary."
+            choice "Challenge the dragon" -> dragon_fight
+            choice "Seek peaceful resolution" -> dragon_diplomacy
+        } else if intelligence >= 15 {
+            text: "Your wisdom is your greatest weapon."
+            choice "Outwit the dragon" -> dragon_puzzle
+            choice "Research dragon lore" -> dragon_research
+        } else {
+            text: "You must be clever to survive."
+            choice "Set a trap" -> dragon_trap
+            choice "Seek allies" -> find_allies
+        }
+        
+    } else {
+        text: "You are still learning your abilities."
+        
+        if gold >= 100 {
+            text: "At least you have wealth to aid you."
+            choice "Hire mercenaries" -> hire_help
+            choice "Buy better equipment" -> equipment_shop
+        } else {
+            text: "You must rely on wit and courage."
+            choice "Train harder" -> training_ground
+            choice "Seek a mentor" -> find_mentor
+        }
+    }
+    
+    # Always available fallback
+    choice "Return to safety" -> syntax_demo
+}
+
+# ===== PLACEHOLDER SCENES FOR COMPLEX BRANCHING =====
+scene dragon_fight {
+    text: "You engage the dragon in epic combat!"
+    text: "This would be a complex combat sequence."
+    choice "Return to demo" -> syntax_demo
+}
+
+scene dragon_diplomacy {
+    text: "You attempt to negotiate with the ancient dragon."
+    text: "Your charisma and wisdom are put to the test."
+    choice "Return to demo" -> syntax_demo
+}
+
+scene dragon_puzzle {
+    text: "You challenge the dragon to a battle of wits."
+    text: "Intelligence-based puzzle sequence would go here."
+    choice "Return to demo" -> syntax_demo
+}
+
+scene dragon_research {
+    text: "You delve into ancient tomes to learn about dragons."
+    text: "Knowledge is power in this approach."
+    choice "Return to demo" -> syntax_demo
+}
+
+scene dragon_trap {
+    text: "You set an elaborate trap for the dragon."
+    text: "Cunning and preparation are your allies."
+    choice "Return to demo" -> syntax_demo
+}
+
+scene find_allies {
+    text: "You seek companions to aid in your quest."
+    text: "Teamwork makes the dream work."
+    choice "Return to demo" -> syntax_demo
+}
+
+scene hire_help {
+    text: "You use your wealth to hire skilled mercenaries."
+    set gold = gold - 75
+    text: "Gold remaining: {gold}"
+    choice "Return to demo" -> syntax_demo
+}
+
+scene equipment_shop {
+    text: "You purchase superior equipment."
+    set gold = gold - 50
+    set sword = sword + 1
+    set shield = shield + 1
+    text: "Your combat effectiveness increases!"
+    choice "Return to demo" -> syntax_demo
+}
+
+scene training_ground {
+    text: "You spend time honing your skills."
+    set strength = strength + 2
+    set agility = agility + 1
+    text: "Your physical abilities improve!"
+    choice "Return to demo" -> syntax_demo
+}
+
+scene find_mentor {
+    text: "You seek out a wise teacher."
+    set intelligence = intelligence + 3
+    text: "Your mind expands with new knowledge!"
+    choice "Return to demo" -> syntax_demo
+}
+
+# ===== ADDITIONAL DEMO SCENES =====
+scene combat_demo {
+    text: "Combat System Demo (requires sword)"
+    text: "You draw your weapon and prepare for battle!"
+    
+    set enemy_health = 50
+    set player_damage = strength + 10
+    
+    text: "Enemy health: {enemy_health}"
+    text: "Your attack damage: {player_damage}"
+    
+    choice "Attack!" -> attack_sequence
+    choice "Return to demo" -> syntax_demo
+}
+
+scene attack_sequence {
+    text: "You strike with your sword!"
+    set enemy_health = enemy_health - player_damage
+    
+    if enemy_health <= 0 {
+        text: "Victory! The enemy is defeated!"
+        set experience = experience + 100
+        set gold = gold + 25
+    } else {
+        text: "The enemy still stands with {enemy_health} health remaining."
+    }
+    
+    choice "Return to demo" -> syntax_demo
+}
+
+scene shop_demo {
+    text: "Welcome to the shop! (requires 50+ gold)"
+    text: "Current gold: {gold}"
+    
+    if gold >= 30 {
+        choice "Buy health potion (30 gold)" -> buy_potion
+    }
+    
+    if gold >= 75 {
+        choice "Buy magic scroll (75 gold)" -> buy_scroll
+    }
+    
+    choice "Leave shop" -> syntax_demo
+}
+
+scene buy_potion {
+    text: "You purchase a health potion."
+    set gold = gold - 30
+    set potion = potion + 1
+    text: "Gold remaining: {gold}, Potions: {potion}"
+    choice "Return to demo" -> syntax_demo
+}
+
+scene buy_scroll {
+    text: "You purchase a magic scroll."
+    set gold = gold - 75
+    set scroll = scroll + 1
+    text: "Gold remaining: {gold}, Scrolls: {scroll}"
+    choice "Return to demo" -> syntax_demo
+}
+
+scene puzzle_demo {
+    text: "Intelligence Puzzle (requires 12+ INT)"
+    text: "You face a complex riddle that tests your mind."
+    text: "Your intelligence of {intelligence} serves you well."
+    
+    set puzzle_solved = true
+    set experience = experience + 75
+    text: "Puzzle solved! You gain experience."
+    
+    choice "Return to demo" -> syntax_demo
+}
+
+scene secret_area {
+    text: "Secret Area (requires key + temple visit)"
+    text: "You unlock a hidden chamber with your key."
+    text: "Ancient treasures await within!"
+    
+    set gem = gem + 5
+    set gold = gold + 100
+    text: "You found 5 gems and 100 gold!"
+    
+    choice "Return to demo" -> syntax_demo
+}
+
+scene heroic_scene {
+    text: "Heroic Action (requires high stats)"
+    text: "Your exceptional abilities allow for heroic deeds!"
+    text: "STR: {strength}, Sword: {has_sword}, HP: {health}"
+    
+    set experience = experience + 200
+    text: "Your heroism is legendary! +200 experience!"
+    
+    choice "Return to demo" -> syntax_demo [ACHIEVEMENT: True Hero]
+}

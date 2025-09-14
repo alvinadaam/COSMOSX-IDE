@@ -1,0 +1,63 @@
+<svg width="160" height="50" viewBox="0 0 160 50" xmlns="http://www.w3.org/2000/svg" aria-labelledby="player-title">
+  <title id="player-title">COSMOSX Player</title>
+  <defs>
+    <linearGradient id="playerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <filter id="playGlowFilter">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.5" result="blur"/>
+      <feFlood flood-color="#fbbf24" result="glowColor"/>
+      <feComposite in="glowColor" in2="blur" operator="in" result="softGlow"/>
+      <feMerge>
+        <feMergeNode in="softGlow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Play button -->
+  <g transform="translate(25, 25)">
+    <circle cx="0" cy="0" r="13" fill="url(#playerGradient)" filter="url(#playGlowFilter)"/>
+    <polygon points="3,-5 3,5 9,0" fill="white"/>
+  </g>
+  
+  <!-- Text content -->
+  <g transform="translate(70, 15)">
+    <text x="0" y="18" font-family="'Segoe UI', sans-serif" font-size="16" font-weight="700" fill="url(#playerGradient)">
+      PLAYER
+    </text>
+    <text x="0" y="32" font-family="'Segoe UI', sans-serif" font-size="9" fill="#94a3b8">
+      STORY EXPERIENCE
+    </text>
+    
+    <!-- Progress bar -->
+    <g transform="translate(0, 38)">
+      <rect x="0" y="0" width="50" height="4" fill="#334155" rx="2"/>
+      <rect x="0" y="0" width="30" height="4" fill="url(#playerGradient)" rx="2"/>
+      <circle cx="30" cy="2" r="3" fill="white" stroke="#1e293b" stroke-width="1"/>
+    </g>
+  </g>
+  
+  <!-- Experience icons -->
+  <g transform="translate(140, 25)">
+    <!-- Achievement -->
+    <g transform="translate(0, -10)">
+      <circle cx="0" cy="0" r="5" fill="#f59e0b" opacity="0.9"/>
+      <text x="0" y="2" font-family="Arial" font-size="7" fill="white" text-anchor="middle" font-weight="700">★</text>
+    </g>
+    
+    <!-- Stats -->
+    <g transform="translate(0, 10)">
+      <rect x="-4" y="-4" width="8" height="8" fill="#3b82f6" opacity="0.9" rx="2"/>
+      <text x="0" y="2" font-family="Arial" font-size="6" fill="white" text-anchor="middle" font-weight="700">Σ</text>
+    </g>
+  </g>
+  
+  <!-- Sound waves -->
+  <g transform="translate(50, 25)" stroke="url(#playerGradient)" stroke-width="1" fill="none">
+    <path d="M 0 0 Q 3 -4 6 0 T 12 0" opacity="0.7"/>
+    <path d="M 15 0 Q 18 -6 21 0 T 27 0" opacity="0.9"/>
+  </g>
+</svg>

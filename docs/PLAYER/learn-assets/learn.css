@@ -1,0 +1,133 @@
+/* COSMOSX Player Learn Page Styles - Minimal User Showcase */
+
+body {
+    background: #181c22;
+    color: #e6eaf3;
+    font-family: 'Segoe UI', 'Fira Sans', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px;
+}
+
+h1, h2, h3 {
+    color: #58a6ff;
+    font-weight: 700;
+    margin-top: 2em;
+    margin-bottom: 0.8em;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: 2.2rem;
+    margin-top: 0;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+h3 {
+    font-size: 1.2rem;
+}
+
+p, ul, li {
+    font-size: 1.05rem;
+    color: #e6eaf3;
+    line-height: 1.7;
+}
+
+ul {
+    padding-left: 1.2em;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    margin: 32px 0;
+}
+
+.card {
+    background: #232a36;
+    border-radius: 12px;
+    padding: 28px 20px;
+    box-shadow: 0 4px 24px rgba(88, 166, 255, 0.07);
+    border: 1px solid #30363d;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 8px 32px rgba(88, 166, 255, 0.13);
+}
+
+.card h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #58a6ff;
+    font-size: 1.15rem;
+}
+
+.card p {
+    margin: 0;
+    color: #b0cfff;
+    font-size: 1rem;
+}
+
+.feature-list {
+    margin: 0;
+    padding: 0 0 0 1.2em;
+}
+
+.feature-list li {
+    margin-bottom: 8px;
+    color: #b0cfff;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.hero-title {
+    font-size: 2.4rem;
+    color: #58a6ff;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.hero-desc {
+    color: #b0cfff;
+    font-size: 1.2rem;
+    margin-bottom: 0;
+}
+
+.screenshot {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 10px;
+    margin: 32px auto;
+    display: block;
+    box-shadow: 0 2px 16px rgba(88, 166, 255, 0.08);
+    border: 1px solid #232a36;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 20px 6px;
+    }
+    .hero-title {
+        font-size: 1.5rem;
+    }
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+} 

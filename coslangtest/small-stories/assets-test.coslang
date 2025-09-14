@@ -1,0 +1,38 @@
+title: "Assets System Test"
+author: "Test Suite"
+version: "1.0.0"
+
+assets {
+    image test_bg = "background.jpg" { width: 800, height: 600 }
+    image test_icon = "icon.png" { width: 64, height: 64 }
+    audio test_sound = "beep.wav" { volume: 0.8, loop: false }
+    audio test_music = "music.mp3" { volume: 0.5, loop: true }
+    video test_clip = "intro.mp4" { autoplay: true, controls: false }
+}
+
+scene start {
+    text: "Testing asset system..."
+    
+    text: "Showing background image..."
+    show image test_bg
+    
+    text: "Showing icon..."
+    show image test_icon
+    
+    text: "Playing sound effect..."
+    play audio test_sound
+    
+    text: "Playing background music..."
+    play audio test_music
+    
+    text: "Showing video..."
+    show video test_clip
+    
+    text: "All assets loaded successfully!"
+    
+    choice "Test complete" -> end
+}
+
+scene end {
+    text: "Asset test completed!"
+}
