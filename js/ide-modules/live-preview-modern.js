@@ -382,7 +382,9 @@ export class ModernLivePreview {
 
     // Render stats panel
     renderStats(stats) {
-        const statsKeys = Object.keys(stats);
+        console.log('DEBUG: renderStats called with:', stats);
+        const statsKeys = Object.keys(stats || {});
+        console.log('DEBUG: statsKeys:', statsKeys);
         
         if (statsKeys.length === 0) {
             this.elements.statsContent.innerHTML = `

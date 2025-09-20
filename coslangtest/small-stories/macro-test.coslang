@@ -9,6 +9,13 @@ vars {
     enemy_health = 30
 }
 
+stats {
+    health = 80
+    max_health = 100
+    damage_dealt = 0
+    enemy_health = 30
+}
+
 scene start {
     text: "Testing macro system..."
     text: "Player health: {health}/{max_health}"

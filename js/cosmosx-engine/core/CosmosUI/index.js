@@ -33,6 +33,9 @@ export class CosmosUI {
       currentAudio: state.currentAudio || null, // Added for asset rendering
       currentVideo: state.currentVideo || null  // Added for asset rendering
     };
+    // Debug logging for stats
+    console.log('DEBUG: CosmosUI getRenderableState - stats:', state.stats);
+    console.log('DEBUG: CosmosUI getRenderableState - vars:', state.vars);
     for (let i = 0; i < content.length; i++) {
       const node = content[i];
       if (node.type === 'text') {

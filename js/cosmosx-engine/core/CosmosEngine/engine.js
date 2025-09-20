@@ -561,35 +561,126 @@ export class CosmosEngine {
         
         logger.debug(`[ENGINE] MACRO DEBUG: Final paramMap:`, paramMap);
         
-        // Execute macro body
+        // Execute macro body - simplified approach for now
         let returnValue = null;
         if (macroDef.body && typeof macroDef.body === 'string') {
           logger.debug(`[ENGINE] MACRO DEBUG: Macro body:`, macroDef.body);
           let lines = macroDef.body.split(/\r?\n/).map(line => line.trim()).filter(l => l.length > 0);
           logger.debug(`[ENGINE] MACRO DEBUG: Parsed lines:`, lines);
           
-          for (const l of lines) {
-            if (l.startsWith('return ')) {
-              let returnExpr = l.substring(7).trim();
-              logger.debug(`[ENGINE] MACRO DEBUG: Found return statement: "${returnExpr}"`);
-              
-              // Replace parameters with their values
-              let oldExpr = returnExpr;
-              for (const param in paramMap) {
-                returnExpr = returnExpr.replace(new RegExp(`\\b${param}\\b`, 'g'), paramMap[param]);
+          // Process lines with proper if-statement handling
+          let i = 0;
+          while (i < lines.length) {
+            let processedLine = lines[i];
+            
+            // Replace parameters in the line first
+            for (const param in paramMap) {
+              processedLine = processedLine.replace(new RegExp(`\\b${param}\\b`, 'g'), paramMap[param]);
+            }
+            
+            if (processedLine.startsWith('set ')) {
+              // Execute set statement within macro context
+              logger.debug(`[ENGINE] MACRO DEBUG: Executing set statement: "${processedLine}"`);
+              const setMatch = processedLine.match(/^set\s+(\w+)\s*=\s*(.+)$/);
+              if (setMatch) {
+                const setVar = setMatch[1];
+                const setExpr = setMatch[2];
+                
+                // Create a temporary set node and execute it
+                const tempSetNode = { type: 'set', var: setVar, expr: setExpr };
+                this.handleSet(tempSetNode);
+                logger.debug(`[ENGINE] MACRO DEBUG: Set executed: ${setVar} = ${this.state.vars[setVar] || this.state.stats[setVar] || this.state.inventory[setVar]}`);
               }
+              i++;
+            } else if (processedLine.startsWith('if ') && processedLine.endsWith(' {')) {
+              // Handle if statement block
+              const condition = processedLine.slice(3, -2).trim();
+              logger.debug(`[ENGINE] MACRO DEBUG: Processing if condition: "${condition}"`);
               
-              // Replace variable names with their values
-              returnExpr = returnExpr.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\b/g, (name) => {
+              // Evaluate condition
+              const context = { ...this.state.vars, ...this.state.stats, ...this.state.inventory };
+              let cond = condition;
+              cond = cond.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\b/g, (name) => {
                 if (context.hasOwnProperty(name)) {
-                  return context[name];
+                  const value = context[name];
+                  if (typeof value === 'string' && isNaN(Number(value)) && value !== 'true' && value !== 'false') {
+                    return `"${value}"`;
+                  }
+                  return value;
                 }
                 return name;
               });
               
-              if (oldExpr !== returnExpr) {
-                logger.debug(`[ENGINE] MACRO DEBUG: After variable replacement: "${oldExpr}" -> "${returnExpr}"`);
+              let conditionResult = false;
+              try {
+                if (!/^[a-zA-Z0-9_+\-*/() .<>=!"\s&|]+$/.test(cond)) {
+                  throw new Error('Unsafe if condition: ' + condition);
+                }
+                conditionResult = eval(cond);
+              } catch (e) {
+                throw new Error('Macro if condition error: ' + e.message);
               }
+              
+              logger.debug(`[ENGINE] MACRO DEBUG: If condition result: ${conditionResult}`);
+              
+              // Find the matching closing brace
+              let braceCount = 1;
+              let ifBlockEnd = i + 1;
+              while (ifBlockEnd < lines.length && braceCount > 0) {
+                const line = lines[ifBlockEnd].trim();
+                if (line === '{') braceCount++;
+                else if (line === '}') braceCount--;
+                ifBlockEnd++;
+              }
+              
+              // Execute if block if condition is true
+              if (conditionResult) {
+                for (let j = i + 1; j < ifBlockEnd - 1; j++) {
+                  let blockLine = lines[j].trim();
+                  if (blockLine === '{' || blockLine === '}') continue;
+                  
+                  // Replace parameters in block line
+                  for (const param in paramMap) {
+                    blockLine = blockLine.replace(new RegExp(`\\b${param}\\b`, 'g'), paramMap[param]);
+                  }
+                  
+                  if (blockLine.startsWith('set ')) {
+                    const setMatch = blockLine.match(/^set\s+(\w+)\s*=\s*(.+)$/);
+                    if (setMatch) {
+                      const setVar = setMatch[1];
+                      const setExpr = setMatch[2];
+                      const tempSetNode = { type: 'set', var: setVar, expr: setExpr };
+                      this.handleSet(tempSetNode);
+                      logger.debug(`[ENGINE] MACRO DEBUG: If block set executed: ${setVar} = ${this.state.vars[setVar] || this.state.stats[setVar] || this.state.inventory[setVar]}`);
+                    }
+                  } else if (blockLine.startsWith('text:')) {
+                    logger.debug(`[ENGINE] MACRO DEBUG: If block text: ${blockLine}`);
+                  }
+                }
+              }
+              
+              i = ifBlockEnd;
+            } else if (processedLine.startsWith('text:')) {
+              // Execute text statement within macro context
+              logger.debug(`[ENGINE] MACRO DEBUG: Executing text statement: "${processedLine}"`);
+              const textContent = processedLine.substring(5).trim();
+              const interpolatedText = this.interpolateVariables(textContent.replace(/^["']|["']$/g, ''));
+              logger.debug(`[ENGINE] MACRO DEBUG: Text output: "${interpolatedText}"`);
+              i++;
+            } else if (processedLine.startsWith('return ')) {
+              let returnExpr = processedLine.substring(7).trim();
+              logger.debug(`[ENGINE] MACRO DEBUG: Found return statement: "${returnExpr}"`);
+              
+              // Replace variable names with their current values
+              returnExpr = returnExpr.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\b/g, (name) => {
+                const currentContext = { ...this.state.vars, ...this.state.stats, ...this.state.inventory };
+                if (currentContext.hasOwnProperty(name)) {
+                  return currentContext[name];
+                }
+                return name;
+              });
+              
+              logger.debug(`[ENGINE] MACRO DEBUG: Return expression after variable replacement: "${returnExpr}"`);
               
               // Evaluate the return expression
               if (!/^[a-zA-Z0-9_+\-*/() .<>=!?\s:"]+$/.test(returnExpr)) {
@@ -599,6 +690,13 @@ export class CosmosEngine {
               
               returnValue = eval(returnExpr);
               break;
+            } else if (processedLine === '}') {
+              // Skip closing braces
+              i++;
+            } else {
+              // Skip unknown lines
+              logger.debug(`[ENGINE] MACRO DEBUG: Skipping line: ${processedLine}`);
+              i++;
             }
           }
         }
